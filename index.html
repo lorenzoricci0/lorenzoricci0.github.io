@@ -1,39 +1,72 @@
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Calcolatrice</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matematica</title>
   <link rel="stylesheet" href="style.css">
+  <script src="js/script.js" defer></script>
 </head>
 <body>
+  <header>  
+    <h1><a class="titolo" href="index.html">Matematica</a></h1>
+    <p>Benvenuto nella Wiki di Matematica! Scegli un argomento e scopri di più.</p>
+  </header>
 
-  <div class="calculator">
-    <div id="display">0</div>
-    <div class="buttons">
-      <!-- numeri -->
-      <button class="btn-number">7</button>
-      <button class="btn-number">8</button>
-      <button class="btn-number">9</button>
-      <button class="btn-operator">/</button>
-
-      <button class="btn-number">4</button>
-      <button class="btn-number">5</button>
-      <button class="btn-number">6</button>
-      <button class="btn-operator">*</button>
-
-      <button class="btn-number">1</button>
-      <button class="btn-number">2</button>
-      <button class="btn-number">3</button>
-      <button class="btn-operator">-</button>
-
-      <button class="btn-number">0</button>
-      <button class="btn-clear">C</button>
-      <button class="btn-equal">=</button>
-      <button class="btn-operator">+</button>
+  <div class="discipline">
+    <div class="colonne">
+      <h2>Analisi Matematica</h2>
+      <ul>
+        <li><a href="argomenti/analisi-matematica/limiti.html">Limiti</a></li>
+        <li><a href="argomenti/analisi-matematica/derivate.html">Derivate</a></li>
+        <li><a href="argomenti/analisi-matematica/integrali.html">Integrali</a></li>
+        <li><a href="argomenti/analisi-matematica/studio-di-funzioni.html">Studio di Funzioni</a></li>
+      </ul>
     </div>
 
+    <div class="colonne">
+      <h2>Geometria</h2>
+      <ul>
+        <li><a href="argomenti/geometria/triangoli.html">Triangoli</a></li>
+        <li><a href="argomenti/geometria/figure-equivalenti.html">Figure equivalenti</a></li>
+        <li><a href="argomenti/geometria/quadrilateri.html">Quadrilateri</a></li>
+        <li><a href="argomenti/geometria/circonferenza-e-cerchio.html">Circonferenza e cerchio</a></li>
+      </ul>
+    </div>
+
+    <div class="colonne">
+      <h2>Algebra</h2>
+      <ul>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+    </div>
   </div>
 
-  <script src="script.js"></script>
+  <div class="discipline">
+    <div class="colonne">
+      <h2>Geometria Analitica</h2>
+      <ul>
+      </ul>
+    </div>
+
+    <div class="colonne">
+      <h2>Storia della Matematica</h2>
+      <ul>
+      </ul>
+    </div>
+
+    <div class="colonne">
+      <h2>Placeholder</h2>
+      <ul>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 Wiki di Matematica</p>
+  </footer>
 </body>
 </html>

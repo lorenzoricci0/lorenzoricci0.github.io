@@ -1,70 +1,103 @@
+/* Impostazioni generali del corpo */
 body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: #f0f0f0;
-  font-family: Arial, sans-serif;
+    font-family: Arial, sans-serif;
+    line-height: 1.6; /* Maggiore spaziatura tra le righe */
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4; /* Colore di sfondo chiaro */
+    min-height: 100vh; /* Assicura che il body copra tutta l'altezza della finestra */
+    display: flex;
+    flex-direction: column;
 }
 
-.calculator {
-  background: #222;
-  padding: 20px;
-  border-radius: 10px;
+/* Stile per l'intestazione */
+header {
+    background: #00254c; /* Colore di sfondo blu */
+    color: white; /* Colore del testo bianco */
+    padding: 20px; /* Padding per l'intestazione */
+    text-align: center; /* Allineamento del testo al centro */
+    font-size: 200%;
 }
 
-#display {
-  background: #444;
-  color: white;
-  font-size: 2rem;
-  padding: 15px;
-  text-align: right;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  min-width: 180px;
+/* Stile per il contenuto principale */
+main {
+    max-width: 800px; /* Larghezza massima per il contenuto */
+    margin: 20px auto; /* Centra il contenuto nella pagina */
+    padding: 20px; /* Padding per il contenuto */
+    background: white; /* Colore di sfondo bianco per il contenuto */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Ombra leggera */
+    flex-grow: 1; /* Occupa lo spazio rimanente per spingere il footer in basso */
 }
 
-.buttons {
-  display: grid;
-  grid-template-columns: repeat(4, 50px);
-  gap: 10px;
+/* Spaziatura tra i titoli e il testo */
+h1, h2, h3 {
+    margin-top: 20px; /* Margine superiore */
+    margin-bottom: 10px; /* Margine inferiore */
 }
 
-button {
-  padding: 15px;
-  font-size: 1.2rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  background: #666;
-  color: white;
-  transition: background 0.2s;
+/* Spaziatura per i paragrafi */
+p {
+    margin: 10px 0; /* Margine verticale per i paragrafi */
 }
 
-button:hover {
-  background: #888;
+/* Spaziatura per le liste */
+ul, ol {
+    margin: 10px 0; /* Margine verticale per le liste */
+    padding-left: 20px; /* Spaziatura sinistra per le liste */
 }
 
-.btn-operator {
-  background: #ff9500;
+
+
+/* Stile per i collegamenti */
+a {
+    color: #00bad7; /* Colore blu per i link */
+    text-decoration: none; /* Rimuovi la sottolineatura */
 }
 
-.btn-operator:hover {
-  background: #ffa733;
+a .titolo {
+    color: #ffffff;
 }
 
-.btn-equal {
-  background: #00cc66;
+
+
+a:hover {
+    text-decoration: underline; /* Sottolineatura al passaggio del mouse */
 }
 
-.btn-equal:hover {
-  background: #33d88c;
+/* Stile per il piè di pagina */
+footer {
+    text-align: center; /* Allineamento del testo al centro */
+    padding: 10px; /* Padding per il piè di pagina */
+    background: #00254c; /* Colore di sfondo blu */
+    color: white; /* Colore del testo bianco */
+    position: relative; /* Posizione relativa per evitare problemi */
+    bottom: 0;
+    width: 100%;
+    margin-top: auto; /* Permette al footer di restare in fondo */
 }
 
-.btn-clear {
-  background: #ff3b30;
+/* Stile per il nav */
+nav {
+    padding: 20px;
 }
 
-.btn-clear:hover {
-  background: #ff5c50;
+/* Stile per la sezione discipline */
+.discipline {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Stile per le colonne */
+.colonne {
+    width: 30%;
+    padding: 10px;
+    background-color: #00254c;
+    margin: 5px;
+    font-size: 150%;
+    color: #ffffff;
+    text-align: center;
+}
+
+li{
+    font-size: 100%;
 }
