@@ -1,84 +1,55 @@
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  font-family: 'Latin Modern Roman', serif;
-  background-color: #9ad68b;
-  font-size: clamp(14px, 1.5vw, 18px);
-  text-align: center;
+body{
+    font-family: "Latin Modern Roman", serif;
+    background-color: #daffc2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  margin: 0;
+header{
+    text-align: center;
+    padding: 3%;
+    font-size: 2em;
+    font-weight: bold;
 }
 
-header {
-  background-color: #acff97;
-  padding: 1rem;
-  width: 100%;
-  height: 15%;
-  font-size: clamp(18px, 2vw, 28px);
-  box-sizing: border-box;
-  margin: 0; /* niente margini */
-  flex-shrink: 0; /* non si riduce */
+.titolo{
+    text-decoration: none;
+    color: black;
 }
 
-header h1 {
-  font-size: 300%;
-  margin: 0;
+.sottotitolo{
+    text-align: center;
+    font-size: 1em;
+    font-weight: bold;
+        
 }
 
-header a {
-  text-decoration: none;
-  color: rgb(5, 88, 12);
-}
-
-header a:hover {
-  color: #2e7a27;
-}
-
-main {
-  flex: 1; /* riempie lo spazio centrale */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start; /* contenuto inizia subito sotto header */
-  align-items: center;
-}
-
-.container {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: clamp(1.5rem, 5vw, 3rem);
-  margin-top: 2rem;
-}
-
-.content a {
-  background: #acff97;
-  padding: 0.5rem 1rem;
-  border-radius: 0.8rem;
-  text-decoration: none;
-  color: #054c0a;
-    font-size: clamp(20px, 2vw, 28px);
-}
-
-.content a:hover {
-  background: #79c96a;
-}
-
-footer {
-  background-color: #5c8f53;
-  color: #acff97;
-  width: 100%;
-  margin: 0;
-  flex-shrink: 0; /* non si riduce */
+a:hover{
+    color: #003f00;
 }
 
 
-img {
-  max-width: 50%;
-  height: auto;
+.container{
+    display: flex;
+    justify-content: space-around;
+}
+
+
+.content {
+    text-align: center;
+    font-size: 1.5em;
+    
+}   
+
+.content a{
+    text-decoration: none;
+    color: black;
+}
+
+
+
+img{
+    width: 40%;
+    height: auto;
 }
