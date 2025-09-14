@@ -45,6 +45,7 @@ main {
   display: flex;
   flex-direction: column;
   justify-content: flex-start; /* contenuto inizia subito sotto header */
+  align-items: center;
 }
 
 .container {
@@ -61,7 +62,7 @@ main {
   border-radius: 0.8rem;
   text-decoration: none;
   color: #054c0a;
-  transition: background 0.3s;
+    font-size: clamp(20px, 2vw, 28px);
 }
 
 .content a:hover {
@@ -70,9 +71,14 @@ main {
 
 footer {
   background-color: #5c8f53;
-  color: white;
-  padding: 1rem;
+  color: #acff97;
   width: 100%;
   margin: 0;
   flex-shrink: 0; /* non si riduce */
+}
+
+
+img {
+  max-width: 50%;
+  height: auto;
 }
