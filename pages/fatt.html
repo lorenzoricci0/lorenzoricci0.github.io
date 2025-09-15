@@ -11,10 +11,14 @@
 <body>
 
     <style> 
-    input, button { font-size: 1rem; padding: 8px 12px; margin: 5px; border-radius: 6px; border: 1px solid #ccc; } 
+    input, button {font-family: "Latin Modern Roman", serif; font-size: 1rem; padding: 8px 12px; margin: 5px; border-radius: 6px; border: 1px solid #ccc; } 
     button { background-color: #4caf50; color: white; cursor: pointer; } 
     button:hover { background-color: #45a049; } 
     #risultato { margin-top: 15px; font-size: 1.2rem; color: #333; } 
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button {-webkit-appearance: none; margin: 0;}
+    input[type=number] {-moz-appearance: textfield;}
+
     </style>
 
 
@@ -23,8 +27,8 @@
     </header>
 
     <main>
-        <input type="number" id="numero" placeholder="Inserisci un numero intero">
-        <button id="btn-scomponi">Fattorizza</button>
+        <input type="number" id="numero" placeholder="insert whole number">
+        <button id="btn-scomponi">factor</button>
         <div id="risultato" aria-live="polite"></div>
     </main>
 </body>

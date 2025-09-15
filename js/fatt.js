@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const output = document.getElementById('risultato');
 
   if (!input || !btn || !output) {
-    console.error('Elemento mancante: controlla gli id in index.html');
+    console.error('missing element: check ids in index.html');
     return;
   }
 
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const n0 = parseInt(valore, 10);
 
     if (!valore || isNaN(n0) || n0 < 2) {
-      output.textContent = 'Inserisci un numero intero maggiore di 1.';
+      output.textContent = 'insert whole number greater than 1';
       return;
     }
 
