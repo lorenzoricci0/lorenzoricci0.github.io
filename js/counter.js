@@ -6,6 +6,13 @@ const countDisplay = document.getElementById('count');
 let count = 0;
 function updateDisplay() {
   countDisplay.textContent = count;
+  if (count < 0) {
+    countDisplay.style.color = 'red';
+  } else if (count > 0) {
+    countDisplay.style.color = 'green';
+  } else {
+    countDisplay.style.color = 'black';
+  }
 }
 
 buttons[0].addEventListener('click', () => {
