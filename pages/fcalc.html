@@ -15,7 +15,13 @@
     </header>
 
     <style>
-        main { text-align: center; margin-top: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        main { text-align: center; margin-top: 20px; display: grid; align-items: center; gap: 10px; grid-rows: auto; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));    }
+        label {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* spazio tra input e testo */
+  justify-content: center; /* opzionale: per centrare dentro il grid */
+}
         input, button { font-family: "Latin Modern Roman", serif; font-size: 1rem; padding: 8px 12px; margin: 5px; border-radius: 6px; border: 1px solid #ccc; }
         button { background-color: #4caf50; color: white; cursor: pointer; }
         button:hover { background-color: #45a049; scale: 110%; }
@@ -29,12 +35,29 @@
   
 
     <main>
-        <input type="number" id="proteins-quantity" placeholder="meat quantity">
-        <input type="number" id="grains-quantity" placeholder="carb quantity">
+    <label>
+        <input type="number" id="proteins-quantity" placeholder="proteins quantity">
+        proteins are 2b each
+    </label>
+
+    <label>
+        <input type="number" id="grains-quantity" placeholder="grains quantity">
+        grains are 1.5b each
+    </label>
+
+    <label>
         <input type="number" id="sugars-quantity" placeholder="sugars quantity">
+        sugars are 1.5b each
+    </label>
+
+    <label>
         <input type="number" id="vegetables-quantity" placeholder="vegetables quantity">
-        
+        vegetables are 1.5b each
+    </label>
+    <label>
         <button id="button">calculate</button>
+        meco gets 0.33b per item
+    </label>
     </main>
 
     <div id="result"> </div>
