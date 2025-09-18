@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lorenzoricci</title>
+  <link rel="stylesheet" href="../style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Latin+Modern+Roman&display=swap" rel="stylesheet">
+  <script src="../js/fcalc.js" defer></script>
+</head>
+<body>
+
+    <header>
+        <h1><a class="titolo" href="../index.html">lorenzoricci</a></h1>
+    </header>
+
+    <style>
+        main { text-align: center; margin-top: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        input, button { font-family: "Latin Modern Roman", serif; font-size: 1rem; padding: 8px 12px; margin: 5px; border-radius: 6px; border: 1px solid #ccc; }
+        button { background-color: #4caf50; color: white; cursor: pointer; }
+        button:hover { background-color: #45a049; scale: 110%; }
+        #result { margin-top: 15px; font-size: 1.2rem; color: #333; }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+
+    </style>
+
+  
+
+    <main>
+        <input type="number" id="proteins-quantity" placeholder="meat quantity">
+        <input type="number" id="grains-quantity" placeholder="carb quantity">
+        <input type="number" id="sugars-quantity" placeholder="sugars quantity">
+        <input type="number" id="vegetables-quantity" placeholder="vegetables quantity">
+        
+        <button id="button">calculate</button>
+    </main>
+
+    <div id="result"> </div>
+
+    </main>
+</body>
+</html>
