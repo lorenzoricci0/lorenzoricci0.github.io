@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         divisore++;
       }
-      // Nota: per numeri enormi JavaScript può perdere precisione (Number limit).
     }
 
     output.textContent = `${n0} = ${fattori.join(' × ')}`;

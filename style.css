@@ -11,6 +11,7 @@ header{
     padding: 3%;
     font-size: 2em;
     font-weight: bold;
+    
 }
 
 .titolo{
@@ -53,6 +54,7 @@ a:hover{
 
 .content a:hover{
     color: #0b970b;
+
 }
 
 
