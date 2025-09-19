@@ -9,8 +9,32 @@
   <script src="../js/fatt.js" defer></script>
 </head>
 <body>
+    <header>
+        <h1><a class="titolo" href="home.html">apps</a></h1>
+    </header>
+
+
+    <h2>
+        factorization
+    </h2>
 
     <style> 
+    h1 { 
+        font-family: "Latin Modern Roman", serif; 
+        font-size: 3em; 
+        text-align: left;
+        margin-top: 1%;
+        margin-left: 1%;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 6%;
+        margin-top: 5%;
+    }
     input, button {font-family: "Latin Modern Roman", serif; font-size: 1rem; padding: 8px 12px; margin: 5px; border-radius: 6px; border: 1px solid #ccc; } 
     button { background-color: #4caf50; color: white; cursor: pointer; } 
     button:hover { background-color: #45a049; scale: 110%; } 
@@ -21,9 +45,7 @@
     </style>
 
 
-    <header>
-        <h1><a class="titolo" href="../index.html">lorenzoricci</a></h1>
-    </header>
+    
 
     <main>
         <input type="number" id="numero" placeholder="insert whole number">
