@@ -3,27 +3,122 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>lorenzoricci</title>
+  <title>Chisel & Bits Schematic — Blockbench Converter</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Latin+Modern+Roman&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <header>
-    <h1><a href="index.html">lorenzoricci</a></h1>
-    <h2>math student</h2>
-  </header>
-
-  <div class="content">
-    <a href="pages/home.html">apps</a>
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="2" y="2" width="11" height="11" rx="2" fill="#4d96ff"/>
+        <rect x="15" y="2" width="11" height="11" rx="2" fill="#6bcb77"/>
+        <rect x="2" y="15" width="11" height="11" rx="2" fill="#ffd93d"/>
+        <rect x="15" y="15" width="11" height="11" rx="2" fill="#c77dff" opacity="0.5"/>
+      </svg>
+      <span>Chisel &amp; Bits Schematic</span>
+    </div>
+    <p class="tagline">Converti modelli Blockbench in schematiche layer per layer per Chisel &amp; Bits</p>
   </div>
-  
-    
+</header>
 
+<main>
 
-  <img src="img/infinito.png" alt="">
+  <!-- STEP 1: Upload -->
+  <section class="card" id="sectionUpload">
+    <div class="step-label">1 — Carica il modello</div>
+    <div class="drop-zone" id="dropZone">
+      <div class="drop-icon">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </div>
+      <strong>Trascina il file .bbmodel qui</strong>
+      <span>oppure clicca per selezionarlo</span>
+      <input type="file" id="fileInput" accept=".bbmodel,.json">
+    </div>
+    <div class="file-info" id="fileInfo" style="display:none">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+      <span id="fileInfoName"></span>
+      <button class="btn-ghost" id="btnChangeFile">Cambia file</button>
+    </div>
+    <div class="error-box" id="errorBox" style="display:none"></div>
+  </section>
 
- 
-  
+  <!-- STEP 2: Scale -->
+  <section class="card" id="sectionScale" style="display:none">
+    <div class="step-label">2 — Imposta la scala</div>
+    <p class="scale-desc">
+      In Blockbench, un blocco Minecraft standard misura <strong>16 px</strong>. 
+      Chisel &amp; Bits divide ogni blocco in <strong>16×16×16 bit</strong>.
+      Specifica quanti blocchi C&amp;B vuoi che occupi il lato più lungo del modello.
+    </p>
+    <div class="scale-controls">
+      <label for="scaleBlocks">Dimensione massima:</label>
+      <div class="scale-input-group">
+        <button class="scale-btn" id="btnScaleMinus">−</button>
+        <input type="number" id="scaleBlocks" value="1" min="1" max="8" step="1">
+        <button class="scale-btn" id="btnScalePlus">+</button>
+        <span class="scale-unit">blocchi C&amp;B</span>
+      </div>
+      <div class="scale-preview" id="scalePreview"></div>
+    </div>
+    <button class="btn-primary" id="btnGenerate">Genera schematica →</button>
+  </section>
+
+  <!-- STEP 3: Viewer -->
+  <section class="card viewer-card" id="sectionViewer" style="display:none">
+    <div class="step-label">3 — Schematica layer per layer</div>
+
+    <div class="stats-row" id="statsRow"></div>
+
+    <div class="viewer-toolbar">
+      <div class="axis-group">
+        <span class="toolbar-label">Asse:</span>
+        <div class="toggle-group" id="axisToggle">
+          <button class="active" data-ax="y">Y <small>alto→basso</small></button>
+          <button data-ax="x">X <small>sinistra→destra</small></button>
+          <button data-ax="z">Z <small>fronte→retro</small></button>
+        </div>
+      </div>
+      <div class="zoom-group">
+        <span class="toolbar-label">Zoom:</span>
+        <button class="icon-btn" id="btnZoomOut" title="Riduci">−</button>
+        <span id="zoomLabel">16 px</span>
+        <button class="icon-btn" id="btnZoomIn" title="Ingrandisci">+</button>
+      </div>
+    </div>
+
+    <div class="layer-nav-bar">
+      <button class="nav-btn" id="btnPrev" disabled title="Layer precedente">&#x2039;</button>
+      <div class="layer-slider-wrap">
+        <input type="range" id="layerSlider" min="0" max="0" value="0">
+      </div>
+      <button class="nav-btn" id="btnNext" disabled title="Layer successivo">&#x203a;</button>
+      <span class="layer-counter" id="layerCounter">— / —</span>
+    </div>
+
+    <div class="canvas-wrap" id="canvasWrap">
+      <canvas id="layerCanvas"></canvas>
+    </div>
+
+    <div class="layer-info" id="layerInfo"></div>
+
+    <div class="legend-section">
+      <div class="legend-title">Materiali</div>
+      <div class="legend" id="legend"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Blockbench → Chisel &amp; Bits Schematic Viewer &nbsp;·&nbsp; Funziona interamente nel browser, nessun dato viene inviato</p>
+</footer>
+
+<script src="app.js"></script>
 </body>
 </html>
