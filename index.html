@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chisel & Bits Schematic — Blockbench Converter</title>
+  <title>Chisel & Bits Schematic</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,114 +11,119 @@
 <header>
   <div class="header-inner">
     <div class="logo">
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="2" y="2" width="11" height="11" rx="2" fill="#4d96ff"/>
-        <rect x="15" y="2" width="11" height="11" rx="2" fill="#6bcb77"/>
-        <rect x="2" y="15" width="11" height="11" rx="2" fill="#ffd93d"/>
-        <rect x="15" y="15" width="11" height="11" rx="2" fill="#c77dff" opacity="0.5"/>
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+        <rect x="1" y="1" width="11" height="11" rx="2" fill="#4d96ff"/>
+        <rect x="14" y="1" width="11" height="11" rx="2" fill="#6bcb77"/>
+        <rect x="1" y="14" width="11" height="11" rx="2" fill="#ffd93d"/>
+        <rect x="14" y="14" width="11" height="11" rx="2" fill="#c77dff"/>
       </svg>
-      <span>Chisel &amp; Bits Schematic</span>
+      Chisel &amp; Bits Schematic
     </div>
-    <p class="tagline">Converti modelli Blockbench in schematiche layer per layer per Chisel &amp; Bits</p>
+    <nav class="header-nav">
+      <a href="index.html" class="nav-link active">Viewer</a>
+      <a href="palette-builder.html" class="nav-link">Palette Builder</a>
+    </nav>
   </div>
 </header>
 
 <main>
 
-  <!-- STEP 1: Upload -->
-  <section class="card" id="sectionUpload">
-    <div class="step-label">1 — Carica il modello</div>
-    <div class="drop-zone" id="dropZone">
+  <section class="card" id="sec-upload">
+    <div class="step-label">1 — Carica il modello Blockbench</div>
+    <div class="drop-zone" id="dropModel">
       <div class="drop-icon">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-          <polyline points="17 8 12 3 7 8"/>
-          <line x1="12" y1="3" x2="12" y2="15"/>
-        </svg>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       </div>
-      <strong>Trascina il file .json qui</strong>
+      <strong>Trascina il file .bbmodel qui</strong>
       <span>oppure clicca per selezionarlo</span>
-      <input type="file" id="fileInput" accept=".bbmodel,.json">
+      <input type="file" id="fileModel" accept=".bbmodel,.json">
     </div>
-    <div class="file-info" id="fileInfo" style="display:none">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
-      <span id="fileInfoName"></span>
-      <button class="btn-ghost" id="btnChangeFile">Cambia file</button>
-    </div>
+    <div class="file-badge" id="modelBadge" style="display:none"></div>
     <div class="error-box" id="errorBox" style="display:none"></div>
   </section>
 
-  <!-- STEP 2: Scale -->
-  <section class="card" id="sectionScale" style="display:none">
-    <div class="step-label">2 — Imposta la scala</div>
-    <p class="scale-desc">
-      In Blockbench, un blocco Minecraft standard misura <strong>16 px</strong>. 
-      Chisel &amp; Bits divide ogni blocco in <strong>16×16×16 bit</strong>.
-      Specifica quanti blocchi C&amp;B vuoi che occupi il lato più lungo del modello.
+  <section class="card" id="sec-palette" style="display:none">
+    <div class="step-label">2 — Palette blocchi <span class="optional-tag">opzionale</span></div>
+    <p class="desc">
+      Carica il <code>palette.json</code> generato con il <a href="palette-builder.html">Palette Builder</a>
+      per ricevere suggerimenti sui blocchi da usare in game.
     </p>
-    <div class="scale-controls">
-      <label for="scaleBlocks">Dimensione massima:</label>
-      <div class="scale-input-group">
-        <button class="scale-btn" id="btnScaleMinus">−</button>
-        <input type="number" id="scaleBlocks" value="1" min="1" max="8" step="1">
-        <button class="scale-btn" id="btnScalePlus">+</button>
-        <span class="scale-unit">blocchi C&amp;B</span>
-      </div>
-      <div class="scale-preview" id="scalePreview"></div>
+    <div class="palette-upload-row">
+      <label class="btn-secondary" for="filePalette">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Carica palette.json
+        <input type="file" id="filePalette" accept=".json" style="display:none">
+      </label>
+      <span class="palette-status" id="paletteStatus">Nessuna palette — verranno mostrati solo i colori estratti</span>
+    </div>
+  </section>
+
+  <section class="card" id="sec-scale" style="display:none">
+    <div class="step-label">3 — Scala del modello</div>
+    <p class="desc">Quanti blocchi C&amp;B vuoi che occupi il lato più lungo? 1 blocco = 16×16×16 bit.</p>
+    <div class="scale-row">
+      <button class="scale-btn" id="btnMinus">−</button>
+      <input type="number" id="scaleBlocks" value="1" min="1" max="8">
+      <button class="scale-btn" id="btnPlus">+</button>
+      <span class="scale-unit">blocchi C&amp;B sull'asse più lungo</span>
+      <span class="scale-preview" id="scalePreview"></span>
     </div>
     <button class="btn-primary" id="btnGenerate">Genera schematica →</button>
   </section>
 
-  <!-- STEP 3: Viewer -->
-  <section class="card viewer-card" id="sectionViewer" style="display:none">
-    <div class="step-label">3 — Schematica layer per layer</div>
+  <section class="card viewer-card" id="sec-viewer" style="display:none">
+    <div class="step-label">4 — Schematica layer per layer</div>
 
     <div class="stats-row" id="statsRow"></div>
 
+    <div class="materials-section">
+      <div class="section-title">Materiali</div>
+      <div class="materials-grid" id="materialsGrid"></div>
+    </div>
+
     <div class="viewer-toolbar">
-      <div class="axis-group">
+      <div class="toolbar-group">
         <span class="toolbar-label">Asse:</span>
         <div class="toggle-group" id="axisToggle">
           <button class="active" data-ax="y">Y <small>alto→basso</small></button>
-          <button data-ax="x">X <small>sinistra→destra</small></button>
-          <button data-ax="z">Z <small>fronte→retro</small></button>
+          <button data-ax="x">X <small>sin→des</small></button>
+          <button data-ax="z">Z <small>front→ret</small></button>
         </div>
       </div>
-      <div class="zoom-group">
+      <div class="toolbar-group">
         <span class="toolbar-label">Zoom:</span>
-        <button class="icon-btn" id="btnZoomOut" title="Riduci">−</button>
-        <span id="zoomLabel">16 px</span>
-        <button class="icon-btn" id="btnZoomIn" title="Ingrandisci">+</button>
+        <button class="icon-btn" id="btnZoomOut">−</button>
+        <span id="zoomLabel">16px</span>
+        <button class="icon-btn" id="btnZoomIn">+</button>
+      </div>
+      <div class="toolbar-group">
+        <span class="toolbar-label">Highlight:</span>
+        <select id="highlightMat">
+          <option value="">— tutti —</option>
+        </select>
       </div>
     </div>
 
-    <div class="layer-nav-bar">
-      <button class="nav-btn" id="btnPrev" disabled title="Layer precedente">&#x2039;</button>
-      <div class="layer-slider-wrap">
-        <input type="range" id="layerSlider" min="0" max="0" value="0">
-      </div>
-      <button class="nav-btn" id="btnNext" disabled title="Layer successivo">&#x203a;</button>
+    <div class="layer-nav">
+      <button class="nav-btn" id="btnPrev" disabled>&#x2039;</button>
+      <input type="range" id="layerSlider" min="0" max="0" value="0">
+      <button class="nav-btn" id="btnNext" disabled>&#x203a;</button>
       <span class="layer-counter" id="layerCounter">— / —</span>
     </div>
 
-    <div class="canvas-wrap" id="canvasWrap">
+    <div class="canvas-wrap">
       <canvas id="layerCanvas"></canvas>
     </div>
-
     <div class="layer-info" id="layerInfo"></div>
-
-    <div class="legend-section">
-      <div class="legend-title">Materiali</div>
-      <div class="legend" id="legend"></div>
-    </div>
   </section>
 
 </main>
 
 <footer>
-  <p>Blockbench → Chisel &amp; Bits Schematic Viewer &nbsp;·&nbsp; </p>
+  <p>Chisel &amp; Bits Schematic Viewer · tutto nel browser, nessun dato inviato</p>
 </footer>
 
+<script src="color-utils.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
