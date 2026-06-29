@@ -17,26 +17,124 @@ const chkVanillaOnly  = document.getElementById('chkVanillaOnly');
 const btnExport       = document.getElementById('btnExport');
 const btnReset        = document.getElementById('btnReset');
 
-// Blocchi che non si possono chisel-are
-const NON_CHISELABLE = new Set([
-  'glass','tinted_glass','ice','packed_ice','blue_ice','frosted_ice',
-  'barrier','bedrock','command_block','chain_command_block',
-  'repeating_command_block','structure_block','jigsaw','structure_void',
-  'moving_piston','piston_head','air','cave_air','void_air',
-  'water','lava','fire','soul_fire','nether_portal','end_portal',
-  'end_gateway','spawner',
+// ===== Logica chisel-able =====
+// Strategia: escludiamo tutto ciò che SICURAMENTE non è un cubo pieno,
+// usando pattern sul nome della texture. È più affidabile di una whitelist
+// perché copre anche i mod che seguono le naming convention vanilla.
+
+// Suffissi/pattern che indicano blocchi NON interi (non chisel-able)
+const NON_FULL_PATTERNS = [
+  // Forme non-cubiche vanilla e comuni nei mod
+  '_slab', '_stairs', '_step',
+  '_fence', '_fence_gate', '_wall',
+  '_door', '_trapdoor',
+  '_gate',
+  '_rod', '_bar', '_chain',
+  '_torch', '_torch_on', '_torch_off',
+  '_candle', '_candle_cake',
+  '_rail',
+  '_lever',
+  '_button',
+  '_pressure_plate',
+  '_carpet',
+  '_flower_pot',
+  // Piante, vegetazione, flora
+  '_sapling', '_leaves', '_bush',
+  '_flower', '_tulip', '_orchid', '_allium', '_bluet', '_daisy',
+  '_mushroom_block',   // teniamo le top/side textures ma escludiamo stem
+  '_mushroom_stem',
+  '_fern', '_grass', '_seagrass', '_kelp', '_algae',
+  '_vine', '_lily', '_pad',
+  '_crop', '_wheat', '_carrot', '_potato', '_beetroot', '_melon_stem', '_pumpkin_stem',
+  '_cactus',           // non full cube
+  '_bamboo',
+  '_sugar_cane',
+  '_coral', '_coral_fan', '_coral_block', // i fan non sono cubi
+  // Liquidi e gas
+  'water', 'lava', 'fire', 'soul_fire',
+  '_portal', '_gateway',
+  // Entità / speciali
+  '_banner', '_sign', '_hanging_sign',
+  '_bed',
+  '_skull', '_head',
+  'shulker_box',
+  '_chest',            // non full cube
+  '_ender_chest',
+  '_barrel',
+  '_hopper',
+  '_grindstone',
+  '_anvil',            // forma non cubica
+  '_bell',
+  '_lantern',
+  '_campfire',
+  '_cauldron',
+  '_composter',
+  '_lectern',
+  '_loom',
+  '_stonecutter',
+  '_cartography',
+  '_smithing',
+  '_brewing_stand',
+  '_conduit',
+  '_end_rod',
+  '_lightning_rod',
+  '_armor_stand',
+  '_flower_vase',
+  '_pot',
+  // Texture di stati / overlay (non sono blocchi, sono layer)
+  '_overlay', '_inner', '_outer',
+  '_open', '_closed', '_top', '_bottom', '_side', '_front', '_back',
+  // Queste sono PARTI di blocchi, non blocchi interi
+  '_stem',             // es. melon_stem, mushroom_stem
+  '_cross',            // molte piante usano _cross
+  '_pane',             // glass pane — non full
+  '_bars',
+  // Liquidi stilizzati dei mod
+  '_flow', '_still', '_flowing',
+];
+
+// Nomi esatti da escludere (senza underscore ambigui)
+const NON_FULL_EXACT = new Set([
+  'glass', 'tinted_glass',
+  'ice',                  // può essere chisel-ato ma è trasparente → escludi
+  'spawner',
+  'barrier', 'bedrock',
+  'air', 'cave_air', 'void_air',
+  'command_block', 'chain_command_block', 'repeating_command_block',
+  'structure_block', 'structure_void', 'jigsaw',
+  'moving_piston', 'piston_head',
+  'nether_portal', 'end_portal', 'end_gateway',
+  'dragon_egg',           // forma non cubica
+  'scaffolding',
+  'pointed_dripstone',
+  'snow',                 // layer, non full
+  'powder_snow',
+  'turtle_egg',
+  'frogspawn',
+  'pitcher_pod',
+  'torchflower_crop',
 ]);
-function isChiselable(id) {
-  if (NON_CHISELABLE.has(id)) return false;
-  if (id.includes('glass')) return false;
-  if (id.includes('_door')) return false;
-  if (id.includes('_trapdoor')) return false;
-  if (id.includes('_banner')) return false;
-  if (id.includes('_sign')) return false;
-  if (id.includes('_bed')) return false;
-  if (id.includes('_skull')) return false;
-  if (id.includes('_head')) return false;
-  if (id.includes('shulker_box')) return false;
+
+// Controlla se una texture (identificata dal suo rawName, cioè il filename senza .png)
+// corrisponde a un blocco intero chisel-able.
+function isChiselable(rawName) {
+  // Match esatto
+  if (NON_FULL_EXACT.has(rawName)) return false;
+
+  // Pattern nel nome
+  for (const pat of NON_FULL_PATTERNS) {
+    if (rawName.includes(pat)) return false;
+  }
+
+  // Texture che iniziano con prefissi di blocchi non-cubici comuni nei mod
+  if (rawName.startsWith('torch_')) return false;
+  if (rawName.startsWith('fire_')) return false;
+  if (rawName.startsWith('water_')) return false;
+  if (rawName.startsWith('lava_')) return false;
+
+  // Se ha "glass" nel nome (qualsiasi posizione) → trasparente → no
+  if (rawName.includes('glass')) return false;
+
   return true;
 }
 
@@ -229,8 +327,14 @@ function appendCard(block) {
 }
 
 function updateToolbar() {
-  const total = Object.keys(palette).length;
-  pbCount.textContent = total.toLocaleString('it') + ' texture trovate';
+  const all = Object.values(palette);
+  const total = all.length;
+  const chiselCount = all.filter(b => b.chiselable).length;
+  const notChisel = total - chiselCount;
+  pbCount.innerHTML =
+    `<strong>${total.toLocaleString('it')}</strong> texture trovate &nbsp;·&nbsp; ` +
+    `<span class="count-ok">✓ ${chiselCount.toLocaleString('it')} chisel-able</span>` +
+    (notChisel ? ` &nbsp;·&nbsp; <span class="count-no">${notChisel.toLocaleString('it')} escluse</span>` : '');
 
   const srcList = Object.entries(sourcesFound)
     .sort((a,b) => b[1]-a[1])
@@ -283,22 +387,32 @@ btnReset.addEventListener('click', () => {
 
 // ===== Export =====
 btnExport.addEventListener('click', () => {
-  const blocks = Object.values(palette).map(b => ({
-    id:         b.id,
-    shortId:    b.shortId,
-    modid:      b.modid,
-    hex:        b.hex,
-    lab:        { L: +b.lab.L.toFixed(2), a: +b.lab.a.toFixed(2), b: +b.lab.b.toFixed(2) },
-    chiselable: b.chiselable,
-    isVanilla:  b.isVanilla,
-  }));
+  const includeAll = document.getElementById('chkIncludeAll').checked;
+  const all = Object.values(palette);
+  const blocks = all
+    .filter(b => includeAll || b.chiselable)
+    .map(b => ({
+      id:         b.id,
+      shortId:    b.shortId,
+      modid:      b.modid,
+      hex:        b.hex,
+      lab:        { L: +b.lab.L.toFixed(2), a: +b.lab.a.toFixed(2), b: +b.lab.b.toFixed(2) },
+      chiselable: b.chiselable,
+      isVanilla:  b.isVanilla,
+    }));
 
-  const json = JSON.stringify({ version: 2, generated: new Date().toISOString(), blocks }, null, 2);
+  const skipped = all.length - blocks.length;
+  const json = JSON.stringify({ version: 2, generated: new Date().toISOString(), totalBlocks: blocks.length, blocks }, null, 2);
   const blob = new Blob([json], { type: 'application/json' });
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
   a.href = url; a.download = 'palette.json'; a.click();
   URL.revokeObjectURL(url);
+
+  const btn = document.getElementById('btnExport');
+  const orig = btn.textContent;
+  btn.textContent = `✓ ${blocks.length.toLocaleString('it')} blocchi esportati${skipped ? ` (${skipped} non chisel-able esclusi)` : ''}`;
+  setTimeout(() => { btn.textContent = orig; }, 3500);
 });
 
 // ===== Utils =====

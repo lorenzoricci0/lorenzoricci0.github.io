@@ -96,7 +96,11 @@
         <span class="pb-count" id="pbCount">0 texture trovate</span>
         <span class="pb-sources" id="pbSources"></span>
       </div>
-      <div style="display:flex;gap:8px;align-items:center">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <label class="checkbox-label" style="font-size:12px" title="Di default vengono esclusi scale, lastre, porte, piante ecc.">
+          <input type="checkbox" id="chkIncludeAll">
+          Includi non chisel-able
+        </label>
         <button class="btn-secondary-sm" id="btnReset">Ricomincia</button>
         <button class="btn-primary" id="btnExport">Scarica palette.json</button>
       </div>
