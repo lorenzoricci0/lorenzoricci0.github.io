@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Palette Builder — Chisel & Bits</title>
   <link rel="stylesheet" href="style.css">
+  <!-- JSZip per leggere i .jar (che sono ZIP) direttamente nel browser -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
 
@@ -28,56 +30,87 @@
 
 <main>
 
+  <!-- Istruzioni -->
   <section class="card">
     <div class="step-label">Come funziona</div>
     <div class="how-to">
       <div class="how-step">
         <div class="how-num">1</div>
         <div>
-          <strong>Estrai le texture dal modpack</strong>
-          <p>Vai nella cartella del modpack → <code>.minecraft/mods/</code>, oppure apri il file <code>.jar</code> del mod come ZIP ed estrai la cartella <code>assets/&lt;modid&gt;/textures/block/</code>.</p>
+          <strong>Seleziona la cartella <code>.minecraft</code> del modpack</strong>
+          <p>Il tool legge automaticamente tutti i <code>.jar</code> dentro <code>versions/</code> e <code>mods/</code>,
+          estrae ogni texture di blocco e calcola il suo colore medio. Nessun file viene caricato su internet.</p>
         </div>
       </div>
       <div class="how-step">
         <div class="how-num">2</div>
         <div>
-          <strong>Carica i PNG qui sotto</strong>
-          <p>Trascina tutti i PNG delle texture dei blocchi. Il nome del file diventa l'ID del blocco (es. <code>stone.png</code> → <code>stone</code>). Puoi rinominare i file prima di caricarli.</p>
+          <strong>Aspetta l'elaborazione</strong>
+          <p>Dipende da quanti mod hai — di solito 10–60 secondi. Puoi filtrare e rivedere le texture trovate.</p>
         </div>
       </div>
       <div class="how-step">
         <div class="how-num">3</div>
         <div>
-          <strong>Scarica palette.json</strong>
-          <p>Il tool calcola il colore medio di ogni texture e genera il file da caricare nel Viewer.</p>
+          <strong>Esporta <code>palette.json</code></strong>
+          <p>Usalo nel Viewer per ottenere i suggerimenti automatici sui blocchi da usare in game.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="card">
-    <div class="step-label">Carica texture blocchi</div>
-    <div class="drop-zone drop-zone--large" id="dropTextures">
-      <div class="drop-icon">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-      </div>
-      <strong>Trascina i PNG delle texture qui</strong>
-      <span>anche centinaia di file alla volta</span>
-      <input type="file" id="fileTextures" accept="image/png,image/gif" multiple>
-    </div>
+  <!-- Selezione cartella -->
+  <section class="card" id="sec-pick">
+    <div class="step-label">Seleziona la cartella .minecraft</div>
+    <label class="folder-pick-btn" id="folderPickBtn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+      </svg>
+      Seleziona cartella .minecraft…
+      <input type="file" id="folderInput" webkitdirectory multiple accept=".jar">
+    </label>
+    <p class="folder-hint">
+      Cerca in: <code>C:\Users\TuoNome\AppData\Roaming\.minecraft</code> (Windows)
+      oppure <code>~/Library/Application Support/minecraft</code> (Mac)
+      oppure <code>~/.minecraft</code> (Linux).
+      Se usi un launcher come CurseForge o Prism, la cartella è dentro il profilo del modpack.
+    </p>
+  </section>
 
-    <div class="pb-toolbar" id="pbToolbar" style="display:none">
-      <span class="pb-count" id="pbCount">0 texture caricate</span>
-      <div style="display:flex;gap:8px">
-        <button class="btn-secondary-sm" id="btnClearAll">Svuota tutto</button>
+  <!-- Progress -->
+  <section class="card" id="sec-progress" style="display:none">
+    <div class="step-label">Elaborazione in corso…</div>
+    <div class="progress-wrap">
+      <div class="progress-bar-outer">
+        <div class="progress-bar-inner" id="progressBar"></div>
+      </div>
+      <div class="progress-status" id="progressStatus">Inizializzazione…</div>
+    </div>
+    <div class="progress-log" id="progressLog"></div>
+  </section>
+
+  <!-- Risultati -->
+  <section class="card" id="sec-results" style="display:none">
+    <div class="pb-toolbar">
+      <div>
+        <span class="pb-count" id="pbCount">0 texture trovate</span>
+        <span class="pb-sources" id="pbSources"></span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn-secondary-sm" id="btnReset">Ricomincia</button>
         <button class="btn-primary" id="btnExport">Scarica palette.json</button>
       </div>
     </div>
 
-    <div class="pb-filter-row" id="pbFilterRow" style="display:none">
-      <input type="search" id="pbSearch" placeholder="Filtra per nome blocco…">
+    <div class="pb-filter-row">
+      <input type="search" id="pbSearch" placeholder="Filtra per ID blocco…">
       <label class="checkbox-label">
-        <input type="checkbox" id="chkChiselable"> Solo blocchi chisel-able
+        <input type="checkbox" id="chkChiselable">
+        Solo blocchi chisel-able
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" id="chkVanillaOnly">
+        Solo vanilla
       </label>
     </div>
 
@@ -87,10 +120,10 @@
 </main>
 
 <footer>
-  <p>Chisel &amp; Bits Palette Builder · tutto nel browser, nessun dato inviato</p>
+  <p>Chisel &amp; Bits Palette Builder · tutto nel browser, nessun dato inviato · powered by JSZip</p>
 </footer>
 
-<canvas id="offscreen" style="display:none"></canvas>
+<canvas id="offscreen" style="display:none" width="16" height="16"></canvas>
 <script src="color-utils.js"></script>
 <script src="palette-builder.js"></script>
 </body>
