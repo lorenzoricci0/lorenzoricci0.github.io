@@ -123,6 +123,51 @@ function getBBBounds(model) {
   return { x0,y0,z0, w:x1-x0, h:y1-y0, d:z1-z0 };
 }
 
+// Normalizza la rotazione di un elemento BB in formato canonico
+// Blockbench può usare due formati:
+//   A) oggetto: { axis:"x"|"y"|"z", angle: number, origin:[x,y,z] }
+//   B) array Eulero: [rx, ry, rz]  (meno comune, usato in alcuni exporter)
+// Restituisce null se non c'è rotazione significativa.
+function parseRotation(el) {
+  const rot = el.rotation;
+
+  // Formato A: oggetto con axis/angle/origin
+  if (rot && typeof rot === 'object' && !Array.isArray(rot)) {
+    const angle = rot.angle ?? 0;
+    if (angle === 0) return null;
+    const axMap = { x:{x:1,y:0,z:0}, y:{x:0,y:1,z:0}, z:{x:0,y:0,z:1} };
+    const axis  = axMap[rot.axis] || axMap.y;
+    // origin: può essere array o oggetto
+    let o;
+    if (Array.isArray(rot.origin)) {
+      o = {x:rot.origin[0], y:rot.origin[1], z:rot.origin[2]};
+    } else if (rot.origin && typeof rot.origin === 'object') {
+      o = {x:rot.origin.x??8, y:rot.origin.y??8, z:rot.origin.z??8};
+    } else {
+      // Default Blockbench origin (centro del blocco 16x16x16)
+      o = {x:8, y:8, z:8};
+    }
+    return { axis, angle, origin: o };
+  }
+
+  // Formato B: array Eulero [rx, ry, rz]
+  if (Array.isArray(rot)) {
+    const [rx, ry, rz] = rot;
+    // Prendiamo solo il primo asse non-zero (BB permette rotazione su un solo asse)
+    // Default origin = centro geometrico del cubo
+    const cx = (el.from[0]+el.to[0])/2;
+    const cy = (el.from[1]+el.to[1])/2;
+    const cz = (el.from[2]+el.to[2])/2;
+    const o = {x:cx, y:cy, z:cz};
+    if (rx !== 0) return { axis:{x:1,y:0,z:0}, angle:rx, origin:o };
+    if (ry !== 0) return { axis:{x:0,y:1,z:0}, angle:ry, origin:o };
+    if (rz !== 0) return { axis:{x:0,y:0,z:1}, angle:rz, origin:o };
+    return null;
+  }
+
+  return null;
+}
+
 // Restituisce gli 8 angoli del cubo nel world space (dopo rotazione)
 function getWorldCorners(el) {
   const fx=Math.min(el.from[0],el.to[0]), fy=Math.min(el.from[1],el.to[1]), fz=Math.min(el.from[2],el.to[2]);
@@ -131,16 +176,13 @@ function getWorldCorners(el) {
     {x:fx,y:fy,z:fz},{x:tx,y:fy,z:fz},{x:fx,y:ty,z:fz},{x:tx,y:ty,z:fz},
     {x:fx,y:fy,z:tz},{x:tx,y:fy,z:tz},{x:fx,y:ty,z:tz},{x:tx,y:ty,z:tz},
   ];
-  const rot = el.rotation;
-  if (!rot || rot.angle === 0) return localCorners;
+  const parsed = parseRotation(el);
+  if (!parsed) return localCorners;
 
-  const axMap = { x:{x:1,y:0,z:0}, y:{x:0,y:1,z:0}, z:{x:0,y:0,z:1} };
-  const R = rotMatrix(axMap[rot.axis]||axMap.y, rot.angle);
-  const o = {x:rot.origin[0], y:rot.origin[1], z:rot.origin[2]};
-
+  const R = rotMatrix(parsed.axis, parsed.angle);
+  const o = parsed.origin;
   return localCorners.map(p => {
-    // Trasla rispetto all'origin, ruota, ritrasla
-    const rel = {x:p.x-o.x, y:p.y-o.y, z:p.z-o.z};
+    const rel  = {x:p.x-o.x, y:p.y-o.y, z:p.z-o.z};
     const rot2 = matVec(R, rel);
     return {x:rot2.x+o.x, y:rot2.y+o.y, z:rot2.z+o.z};
   });
@@ -172,14 +214,11 @@ async function loadTextures(model) {
 // NON usiamo il centro dell'OBB come centro di rotazione — usiamo l'origin di BB.
 
 function buildElementRotation(el) {
-  const rot = el.rotation;
-  if (!rot || rot.angle === 0) return null;
-  const axMap = { x:{x:1,y:0,z:0}, y:{x:0,y:1,z:0}, z:{x:0,y:0,z:1} };
-  const R  = rotMatrix(axMap[rot.axis]||axMap.y, rot.angle);
-  const Rt = matTranspose(R); // rotazione inversa
-  const origin = {x:rot.origin[0], y:rot.origin[1], z:rot.origin[2]};
-  return { Rt, origin,
-    // Bounds NON-ruotati dell'elemento in coordinate BB (per il test locale)
+  const parsed = parseRotation(el);
+  if (!parsed) return null;
+  const R  = rotMatrix(parsed.axis, parsed.angle);
+  const Rt = matTranspose(R); // rotazione inversa (= trasposta per matrici ortogonali)
+  return { Rt, origin: parsed.origin,
     fx: Math.min(el.from[0],el.to[0]),
     fy: Math.min(el.from[1],el.to[1]),
     fz: Math.min(el.from[2],el.to[2]),
