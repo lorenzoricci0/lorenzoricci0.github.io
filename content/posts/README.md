@@ -18,6 +18,11 @@ $$
 $$
 ```
 
+cd /Users/lorenzoricci/Desktop/lorenzoricci0.github.io
+git add content/posts/nome-del-file.md
+git commit -m "new article"
+git push
+
 fai commit e push su `main`. una github action genera automaticamente
 `posts/serie-di-fourier.html` e aggiorna l'elenco in home — non serve
 altro.
