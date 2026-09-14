@@ -1,3 +1,4 @@
+---
 title: le serie di fourier
 date: 2026-09-15
 ---
