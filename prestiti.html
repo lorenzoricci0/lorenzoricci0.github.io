@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prestiti — Grande Credito di Eloria</title>
+<meta name="description" content="Prestiti e crediti del Grande Credito di Eloria. Finanziamenti per attività, costruzioni e commercio nel regno.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cinzel+Decorative:wght@700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="vault-bg" aria-hidden="true"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <span class="nav-seal">⛨</span>
+      <span>Grande Credito di Eloria</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Apri il menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">La Banca</a></li>
+      <li><a href="moneta.html">Moneta</a></li>
+      <li><a href="servizi.html">Conti & Investimenti</a></li>
+      <li><a href="prestiti.html" aria-current="page">Prestiti</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<header class="page-hero">
+  <div class="page-hero-glow" aria-hidden="true"></div>
+  <div class="page-hero-content">
+    <p class="page-hero-kicker">Grande Credito di Eloria</p>
+    <h1 class="page-hero-title">Crediti & Prestiti</h1>
+    <p class="page-hero-sub">Il capitale non deve dormire nei forzieri. Il Grande Credito
+      finanzia le ambizioni dei cittadini e fa crescere il regno.</p>
+  </div>
+</header>
+
+<main>
+
+<!-- TIPI DI PRESTITO -->
+<section class="section" id="tipologie">
+  <div class="ledger">
+    <p class="ledger-num">I.</p>
+    <h2 class="ledger-title">Tipologie di credito</h2>
+    <p class="ledger-lede">Ogni progetto merita il sostegno giusto. Il Grande Credito valuta
+      ogni richiesta e propone condizioni adeguate alla natura del finanziamento.</p>
+
+    <div class="loan-types">
+      <article class="loan-card">
+        <p class="account-tag">Commercio</p>
+        <h3>Prestito Commerciale</h3>
+        <p>Per aprire o espandere un'attività commerciale: botteghe, stalle,
+          empori, locande, fucine e laboratori artigianali.</p>
+        <ul>
+          <li>Ideale per avvio di nuove attività</li>
+          <li>Durata flessibile concordata con il direttore</li>
+          <li>Rimborso progressivo o in un'unica soluzione</li>
+        </ul>
+      </article>
+
+      <article class="loan-card">
+        <p class="account-tag">Costruzioni</p>
+        <h3>Prestito Edilizio</h3>
+        <p>Per costruire, ampliare o restaurare strutture nel regno:
+          abitazioni, magazzini, torri, mura e infrastrutture.</p>
+        <ul>
+          <li>Importi elevati per grandi progetti</li>
+          <li>Garanzia sulla proprietà costruita</li>
+          <li>Termini negoziati caso per caso</li>
+        </ul>
+      </article>
+
+      <article class="loan-card">
+        <p class="account-tag">Liquidità</p>
+        <h3>Credito Personale</h3>
+        <p>Quando servono risorse nell'immediato — per un acquisto urgente,
+          un'opportunità da non perdere, o una spesa imprevista.</p>
+        <ul>
+          <li>Erogazione rapida</li>
+          <li>Importi contenuti, durate brevi</li>
+          <li>Interesse fisso concordato</li>
+        </ul>
+      </article>
+
+      <article class="loan-card">
+        <p class="account-tag">Spedizioni</p>
+        <h3>Credito Commerciale</h3>
+        <p>Finanziamento per spedizioni mercantili, acquisto di scorte
+          o operazioni commerciali a distanza.</p>
+        <ul>
+          <li>Rimborso al ritorno dell'investimento</li>
+          <li>Percentuale sui profitti dell'operazione</li>
+          <li>Condizioni legate all'esito della spedizione</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="principle">
+      <span class="principle-mark" aria-hidden="true">§</span>
+      <p>Il Grande Credito guadagna prestando il denaro, non custodendolo. Ogni prestito
+        deve produrre un interesse che remuneri il rischio assunto — a condizioni
+        abbastanza convenienti da rendere il credito preferibile ad altre soluzioni.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CALCOLATORE PRESTITO -->
+<section class="section section-dark" id="calcolatore">
+  <div class="ledger">
+    <p class="ledger-num">II.</p>
+    <h2 class="ledger-title">Calcolatore di prestito</h2>
+    <p class="ledger-lede">Stima l'onere complessivo di un prestito prima di richiederlo.
+      Le condizioni definitive sono concordate con il Direttore.</p>
+
+    <div class="tool-card">
+      <div class="converter-row">
+        <label class="tool-label" for="loanAmount">Somma richiesta (Oro)</label>
+        <input type="number" id="loanAmount" class="tool-input" value="10" min="0" step="0.5">
+      </div>
+      <div class="converter-row">
+        <label class="tool-label" for="loanRate">Tasso settimanale: <strong id="loanRateVal">5%</strong></label>
+        <input type="range" id="loanRate" min="1" max="20" value="5" class="tool-range">
+      </div>
+      <div class="converter-row">
+        <label class="tool-label" for="loanWeeks">Durata (settimane): <strong id="loanWeeksVal">4</strong></label>
+        <input type="range" id="loanWeeks" min="1" max="26" value="4" class="tool-range">
+      </div>
+
+      <div class="loan-results">
+        <div class="loan-result">
+          <span id="loanWeekly">—</span>
+          <label>Rata settimanale (Oro)</label>
+        </div>
+        <div class="loan-result loan-result--interest">
+          <span id="loanInterest">—</span>
+          <label>Interesse totale (Oro)</label>
+        </div>
+        <div class="loan-result loan-result--total">
+          <span id="loanTotal">—</span>
+          <label>Totale da restituire (Oro)</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top: 2rem">
+      <p class="callout-label">Nota</p>
+      <p>Il calcolatore usa un tasso semplice lineare a scopo illustrativo.
+        Le condizioni effettive — tasso, garanzie, modalità di rimborso — sono
+        stabilite direttamente con il Direttore Hagen Trollo al momento
+        della stipula del contratto.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONDIZIONI -->
+<section class="section" id="condizioni">
+  <div class="ledger">
+    <p class="ledger-num">III.</p>
+    <h2 class="ledger-title">Condizioni generali</h2>
+    <p class="ledger-lede">Il Grande Credito opera secondo principi chiari, a tutela
+      sia del creditore sia del debitore.</p>
+
+    <div class="fact-grid">
+      <div class="fact">
+        <span class="fact-k">Valuta</span>
+        <span class="fact-v">Oro, Argento o Bronzo — a scelta del richiedente</span>
+      </div>
+      <div class="fact">
+        <span class="fact-k">Interesse</span>
+        <span class="fact-v">Tasso fisso concordato alla stipula</span>
+      </div>
+      <div class="fact">
+        <span class="fact-k">Durata</span>
+        <span class="fact-v">Negoziata in base al tipo di credito</span>
+      </div>
+      <div class="fact">
+        <span class="fact-k">Garanzie</span>
+        <span class="fact-v">Valutate caso per caso dal Direttore</span>
+      </div>
+      <div class="fact">
+        <span class="fact-k">Rimborso anticipato</span>
+        <span class="fact-v">Consentito, con riduzione proporzionale degli interessi</span>
+      </div>
+      <div class="fact">
+        <span class="fact-k">Inadempienza</span>
+        <span class="fact-v">Negoziazione obbligatoria con il Direttore</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <nav class="footer-nav" aria-label="Navigazione secondaria">
+      <a href="index.html">La Banca</a>
+      <a href="moneta.html">Moneta</a>
+      <a href="servizi.html">Conti & Investimenti</a>
+      <a href="prestiti.html">Prestiti</a>
+    </nav>
+    <p class="footer-seal">⛨ Grande Credito di Eloria</p>
+    <p class="footer-line">Diretta da Hagen Trollo — Eloria</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,6 +1,5 @@
 /* ==========================================================================
    Grande Credito di Eloria — foglio di stile
-   Palette: cripta bancaria alla luce di candela
    ========================================================================== */
 
 :root{
@@ -17,6 +16,7 @@
   --forest:     #33493C;
   --wax:        #7C2A1B;
   --line:       rgba(199,163,67,0.28);
+  --green:      #7fd39a;
 
   --serif-display: "Cinzel", "Iowan Old Style", Georgia, serif;
   --serif-body: "Spectral", Georgia, serif;
@@ -26,7 +26,6 @@
 }
 
 *,*::before,*::after{ box-sizing: border-box; }
-
 html{ scroll-behavior: smooth; }
 
 body{
@@ -71,7 +70,7 @@ img,svg{ display:block; max-width:100%; }
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(12,9,6,0.86);
+  background: rgba(12,9,6,0.88);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--line);
 }
@@ -92,6 +91,7 @@ img,svg{ display:block; max-width:100%; }
   font-weight: 600;
   color: var(--gold-bright);
   text-decoration:none;
+  flex-shrink: 0;
 }
 .nav-seal{ color: var(--gold); font-size: 1.2rem; }
 .nav-links{
@@ -103,12 +103,14 @@ img,svg{ display:block; max-width:100%; }
 .nav-links a{
   text-decoration:none;
   font-size: 0.92rem;
-  color: rgba(234,224,196,0.78);
+  color: rgba(234,224,196,0.72);
   border-bottom: 1px solid transparent;
   padding-bottom: 3px;
   transition: color 0.2s, border-color 0.2s;
 }
-.nav-links a:hover, .nav-links a:focus-visible{
+.nav-links a:hover,
+.nav-links a:focus-visible,
+.nav-links a[aria-current="page"]{
   color: var(--gold-bright);
   border-color: var(--gold);
 }
@@ -125,9 +127,10 @@ img,svg{ display:block; max-width:100%; }
   width: 22px; height: 2px;
   background: var(--gold-bright);
   display:block;
+  transition: transform 0.2s, opacity 0.2s;
 }
 
-/* -------------------- hero -------------------- */
+/* -------------------- hero (home) -------------------- */
 .hero{
   position: relative;
   padding: 6.5rem 1.5rem 5rem;
@@ -203,9 +206,43 @@ img,svg{ display:block; max-width:100%; }
 .hero-cta svg{ transition: transform 0.2s; }
 .hero-cta:hover svg{ transform: translateY(2px); }
 
+/* -------------------- page hero (pagine interne) -------------------- */
+.page-hero{
+  position: relative;
+  padding: 4rem 1.5rem 3.2rem;
+  text-align: center;
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+}
+.page-hero-glow{
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 600px 300px at 50% 0%, rgba(199,163,67,0.14), transparent 65%);
+  pointer-events: none;
+}
+.page-hero-content{ position: relative; max-width: 38rem; margin: 0 auto; }
+.page-hero-kicker{
+  font-size: 0.82rem;
+  letter-spacing: 0.07em;
+  color: var(--bronze);
+  margin-bottom: 0.7rem;
+  text-transform: uppercase;
+}
+.page-hero-title{
+  font-family: var(--serif-display);
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+  color: var(--gold-bright);
+  margin-bottom: 0.8rem;
+}
+.page-hero-sub{
+  color: rgba(234,224,196,0.76);
+  font-size: 1rem;
+  margin: 0;
+}
+
 /* -------------------- sections / ledger -------------------- */
 .section{
-  padding: 5.5rem 1.5rem;
+  padding: 5rem 1.5rem;
   border-bottom: 1px solid var(--line);
 }
 .section-dark{
@@ -308,7 +345,7 @@ img,svg{ display:block; max-width:100%; }
 .coin-eq{ color: var(--bronze); font-family: var(--serif-display); font-size: 0.9rem; }
 .coin-note{ text-align:center; color: rgba(234,224,196,0.7); font-size:0.92rem; margin-bottom: 2.6rem; }
 
-/* -------------------- tool cards (calcolatori) -------------------- */
+/* -------------------- tool cards -------------------- */
 .tool-card{
   border: 1px solid var(--line);
   background: linear-gradient(180deg, rgba(199,163,67,0.05), transparent);
@@ -341,11 +378,13 @@ img,svg{ display:block; max-width:100%; }
   flex: 1;
   min-width: 8rem;
 }
-.tool-input:focus-visible, .tool-select:focus-visible, .duration-btn:focus-visible, .hero-cta:focus-visible, .nav-links a:focus-visible{
+.tool-input:focus-visible, .tool-select:focus-visible,
+.duration-btn:focus-visible, .hero-cta:focus-visible,
+.nav-links a:focus-visible{
   outline: 2px solid var(--gold-bright);
   outline-offset: 2px;
 }
-.tool-range{ width:100%; accent-color: var(--gold); }
+.tool-range{ width:100%; accent-color: var(--gold); cursor: pointer; }
 
 .converter-results{
   display:grid;
@@ -367,7 +406,7 @@ img,svg{ display:block; max-width:100%; }
   font-size: 1.25rem;
   color: var(--gold-bright);
 }
-.converter-result--strong span{ color: #7fd39a; }
+.converter-result--strong span{ color: var(--green); }
 .converter-result label{
   font-size: 0.72rem;
   color: rgba(234,224,196,0.65);
@@ -434,7 +473,7 @@ img,svg{ display:block; max-width:100%; }
   font-size: 0.8rem;
   letter-spacing: 0.04em;
 }
-.rate-val{ color: #7fd39a; font-family: var(--serif-display); }
+.rate-val{ color: var(--green); font-family: var(--serif-display); }
 
 .duration-picker{
   display:flex;
@@ -463,37 +502,168 @@ img,svg{ display:block; max-width:100%; }
   font-weight:600;
 }
 
-/* -------------------- flow -------------------- */
-.flow{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap: 0.8rem;
-  flex-wrap: wrap;
-  margin-bottom: 2.6rem;
-}
-.flow-step{
+/* -------------------- savings chart -------------------- */
+.savings-chart-wrap{
+  margin-top: 1.4rem;
   border: 1px solid var(--line);
-  padding: 0.55rem 1rem;
-  font-size: 0.9rem;
   border-radius: 2px;
-  color: var(--parchment-2);
+  background: rgba(0,0,0,0.22);
+  padding: 1rem 1rem 0.6rem;
 }
-.flow-arrow{ color: var(--bronze); }
+.savings-chart-label{
+  font-size: 0.75rem;
+  color: var(--bronze);
+  margin-bottom: 0.5rem;
+  font-family: var(--serif-display);
+  letter-spacing: 0.03em;
+}
+#savingsChart{ width:100%; height: auto; display:block; }
+.chart-area{ fill: rgba(199,163,67,0.12); }
+.chart-line{ fill:none; stroke: var(--gold); stroke-width:2; stroke-linecap:round; }
+.chart-dot{ fill: var(--gold-bright); }
+.chart-dot-current{ fill: var(--green); }
+.chart-axis{ stroke: var(--line); stroke-width:1; }
+.chart-tick{ fill: rgba(234,224,196,0.45); font-size:9px; }
+.savings-milestones{
+  display:grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+.savings-milestone{
+  text-align:center;
+  padding: 0.5rem 0.3rem;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: rgba(0,0,0,0.2);
+}
+.savings-milestone .ms-week{
+  font-size: 0.65rem;
+  color: var(--bronze);
+  display:block;
+}
+.savings-milestone .ms-val{
+  font-family: var(--serif-display);
+  font-size: 0.88rem;
+  color: var(--parchment-2);
+  display:block;
+  margin-top: 2px;
+}
+.savings-milestone.ms-current{
+  border-color: var(--gold);
+  background: rgba(199,163,67,0.08);
+}
+.savings-milestone.ms-current .ms-val{ color: var(--green); }
 
-/* -------------------- doc grid -------------------- */
-.doc-grid{
+/* -------------------- investment options (comparison) -------------------- */
+.invest-options{
+  display: flex;
+  gap: 0.8rem;
+  margin-bottom: 1.4rem;
+}
+.invest-opt{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 1rem 0.5rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  text-align: center;
+}
+.invest-opt:hover{ border-color: var(--gold); }
+.invest-opt.is-active{
+  border-color: var(--gold);
+  background: rgba(199,163,67,0.08);
+}
+.invest-opt-rate{
+  font-size: 0.72rem;
+  color: var(--bronze);
+  display: block;
+}
+.invest-opt-profit{
+  font-family: var(--serif-display);
+  font-size: 1.1rem;
+  color: var(--gold-bright);
+  display: block;
+  transition: color 0.2s;
+}
+.invest-opt.is-active .invest-opt-profit{ color: var(--green); }
+.invest-opt-dur{
+  font-size: 0.68rem;
+  color: rgba(234,224,196,0.5);
+  display: block;
+}
+
+/* -------------------- prestiti / loan cards -------------------- */
+.loan-types{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.3rem;
+  margin-bottom: 2.5rem;
+}
+.loan-card{
+  border: 1px solid var(--line);
+  padding: 1.6rem;
+  border-radius: 2px;
+}
+.loan-card h3{ font-size: 1.05rem; margin-bottom: 0.5rem; }
+.loan-card p{ font-size: 0.9rem; color: rgba(234,224,196,0.78); margin: 0 0 0.5rem; }
+.loan-card .account-tag{ margin-bottom: 0.6rem; }
+.loan-card ul{
+  margin: 0.8rem 0 0;
+  padding-left: 1.1rem;
+  color: rgba(234,224,196,0.72);
+  font-size: 0.88rem;
+}
+.loan-card ul li{ margin-bottom: 0.25rem; }
+
+.loan-results{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+.loan-result{
+  background: rgba(0,0,0,0.25);
+  border: 1px solid var(--line);
+  padding: 0.9rem 0.6rem;
+  text-align:center;
+  border-radius: 2px;
+}
+.loan-result span{
+  display:block;
+  font-family: var(--serif-display);
+  font-size: 1.2rem;
+  color: var(--gold-bright);
+}
+.loan-result label{
+  font-size: 0.7rem;
+  color: rgba(234,224,196,0.6);
+}
+.loan-result--interest span{ color: var(--bronze); }
+.loan-result--total span{ color: #e88a8a; }
+
+/* -------------------- balance grid -------------------- */
+.balance-grid{
   display:grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.3rem;
 }
-.doc-card{
-  border: 1px solid var(--line);
-  padding: 1.5rem;
-  border-radius: 2px;
+.balance-col{
+  border-top: 2px solid var(--gold);
+  padding-top: 0.9rem;
 }
-.doc-card h3{ font-size: 1.02rem; }
-.doc-card p{ font-size: 0.92rem; color: rgba(234,224,196,0.78); margin:0; }
+.balance-head{
+  font-family: var(--serif-display);
+  color: var(--parchment-2);
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+}
+.balance-desc{ font-size: 0.9rem; color: rgba(234,224,196,0.72); margin:0; }
 
 /* -------------------- cycle diagram -------------------- */
 .cycle{
@@ -562,44 +732,6 @@ img,svg{ display:block; max-width:100%; }
   margin:0;
 }
 
-/* -------------------- balance grid -------------------- */
-.balance-grid{
-  display:grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.3rem;
-}
-.balance-col{
-  border-top: 2px solid var(--gold);
-  padding-top: 0.9rem;
-}
-.balance-head{
-  font-family: var(--serif-display);
-  color: var(--parchment-2);
-  font-size: 1rem;
-  margin-bottom: 0.4rem;
-}
-.balance-desc{ font-size: 0.9rem; color: rgba(234,224,196,0.72); margin:0; }
-
-.table-wrap{ overflow-x:auto; margin-top:1.2rem; }
-.ledger-table{
-  width:100%;
-  border-collapse: collapse;
-  font-size: 0.95rem;
-}
-.ledger-table th, .ledger-table td{
-  text-align:left;
-  padding: 0.7rem 1rem;
-  border-bottom: 1px solid var(--line);
-}
-.ledger-table th{
-  color: var(--bronze);
-  font-size: 0.78rem;
-  letter-spacing: 0.04em;
-  font-weight: 500;
-}
-.ledger-table td{ color: rgba(234,224,196,0.85); }
-.table-caption{ font-size: 0.8rem; color: rgba(234,224,196,0.5); margin-top: 0.6rem; }
-
 /* -------------------- building -------------------- */
 .building-wrap{
   border: 1px solid var(--line);
@@ -619,43 +751,14 @@ img,svg{ display:block; max-width:100%; }
 .b-banner{ fill: var(--wax); stroke: var(--gold); stroke-width:1; }
 .b-banner-seal{ fill: var(--gold-bright); }
 
-/* -------------------- status -------------------- */
-.status-grid{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-}
-.status-head{
-  font-family: var(--serif-display);
-  font-size: 1rem;
-  margin-bottom: 0.9rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid;
-}
-.status-head--done{ color: #7fd39a; border-color: #7fd39a; }
-.status-head--todo{ color: var(--bronze); border-color: var(--bronze); }
-.status-list{ list-style:none; margin:0; padding:0; }
-.status-list li{
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--line);
-  font-size: 0.92rem;
-  color: rgba(234,224,196,0.82);
-  display:flex;
-  align-items:baseline;
-  gap: 0.6rem;
-}
-.status-list li::before{ content: "✓"; color: #7fd39a; font-family: var(--serif-display); }
-.status-list--todo li::before{ content: "○"; color: var(--bronze); }
-
 /* -------------------- closing -------------------- */
 .closing{
   text-align:center;
-  padding: 6rem 1.5rem;
+  padding: 5rem 1.5rem;
   background: radial-gradient(ellipse 700px 400px at 50% 40%, rgba(199,163,67,0.08), transparent 70%);
 }
 .closing-quote{
   font-family: var(--serif-display);
-  font-style: normal;
   font-size: clamp(1.1rem, 2.4vw, 1.4rem);
   line-height: 1.6;
   color: var(--parchment-2);
@@ -677,17 +780,32 @@ img,svg{ display:block; max-width:100%; }
 }
 .footer-line{
   font-size: 0.8rem;
-  color: rgba(234,224,196,0.45);
+  color: rgba(234,224,196,0.38);
   margin:0;
 }
+.footer-nav{
+  display: flex;
+  justify-content: center;
+  gap: 1.8rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.4rem;
+}
+.footer-nav a{
+  text-decoration: none;
+  font-size: 0.82rem;
+  color: rgba(234,224,196,0.55);
+  transition: color 0.2s;
+}
+.footer-nav a:hover{ color: var(--gold-bright); }
 
 /* -------------------- responsive -------------------- */
 @media (max-width: 860px){
   .account-grid{ grid-template-columns: 1fr; }
-  .doc-grid{ grid-template-columns: 1fr; }
   .balance-grid{ grid-template-columns: 1fr; gap: 2rem; }
-  .status-grid{ grid-template-columns: 1fr; }
   .fact-grid--three{ grid-template-columns: 1fr 1fr; }
+  .loan-types{ grid-template-columns: 1fr; }
+  .loan-results{ grid-template-columns: 1fr 1fr; }
+  .savings-milestones{ grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 720px){
@@ -720,4 +838,7 @@ img,svg{ display:block; max-width:100%; }
   .cycle-center{ width: 10rem; }
   .cycle-center-title{ font-size: 0.95rem; }
   .cycle-center-desc{ font-size: 0.72rem; }
+  .invest-visual{ height: 120px; }
+  .invest-bar-pct{ font-size: 0.62rem; }
+  .savings-milestones{ grid-template-columns: repeat(2, 1fr); }
 }

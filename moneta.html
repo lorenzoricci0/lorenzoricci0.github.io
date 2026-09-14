@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema Monetario — Grande Credito di Eloria</title>
+<meta name="description" content="Il sistema monetario di Eloria: Oro, Argento e Bronzo. Convertitore di valuta del regno.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cinzel+Decorative:wght@700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="vault-bg" aria-hidden="true"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <span class="nav-seal">⛨</span>
+      <span>Grande Credito di Eloria</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Apri il menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">La Banca</a></li>
+      <li><a href="moneta.html" aria-current="page">Moneta</a></li>
+      <li><a href="servizi.html">Conti & Investimenti</a></li>
+      <li><a href="prestiti.html">Prestiti</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<header class="page-hero">
+  <div class="page-hero-glow" aria-hidden="true"></div>
+  <div class="page-hero-content">
+    <p class="page-hero-kicker">Grande Credito di Eloria</p>
+    <h1 class="page-hero-title">Il Sistema Monetario</h1>
+    <p class="page-hero-sub">La valuta del regno si articola su tre livelli: Oro, Argento e Bronzo.
+      Una gerarchia semplice, un equilibrio millenario.</p>
+  </div>
+</header>
+
+<main>
+
+<!-- LE TRE VALUTE -->
+<section class="section" id="valute">
+  <div class="ledger">
+    <p class="ledger-num">I.</p>
+    <h2 class="ledger-title">Le tre valute</h2>
+    <p class="ledger-lede">Ogni transazione nel regno si esprime in una di queste monete.
+      Il Grande Credito accetta e custodisce tutte e tre.</p>
+
+    <div class="coin-scale">
+      <div class="coin coin-gold">
+        <span class="coin-symbol">O</span>
+        <span class="coin-name">Oro</span>
+      </div>
+      <span class="coin-eq">= 100</span>
+      <div class="coin coin-silver">
+        <span class="coin-symbol">A</span>
+        <span class="coin-name">Argento</span>
+      </div>
+      <span class="coin-eq">= 100</span>
+      <div class="coin coin-bronze">
+        <span class="coin-symbol">B</span>
+        <span class="coin-name">Bronzo</span>
+      </div>
+    </div>
+    <p class="coin-note">1 Oro equivale a 100 Argenti, ovvero 10.000 Bronzi.</p>
+
+    <div class="rate-table" style="margin-top:2rem">
+      <div class="rate-row rate-row--head">
+        <span>Valuta</span><span>Equivalente in Bronzi</span>
+      </div>
+      <div class="rate-row">
+        <span>1 Oro</span><span class="rate-val">10.000 Bronzi</span>
+      </div>
+      <div class="rate-row">
+        <span>1 Argento</span><span class="rate-val">100 Bronzi</span>
+      </div>
+      <div class="rate-row">
+        <span>1 Bronzo</span><span class="rate-val">1 Bronzo</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONVERTITORE -->
+<section class="section section-dark" id="converter">
+  <div class="ledger">
+    <p class="ledger-num">II.</p>
+    <h2 class="ledger-title">Convertitore di valuta</h2>
+    <p class="ledger-lede">Inserisci un importo e la valuta di partenza: il Grande Credito
+      calcola all'istante l'equivalente nelle altre denominazioni.</p>
+
+    <div class="tool-card">
+      <div class="converter-row">
+        <input type="number" id="convInput" class="tool-input" value="1" min="0" step="0.01" inputmode="decimal" aria-label="Importo">
+        <select id="convUnit" class="tool-select" aria-label="Valuta">
+          <option value="oro">Oro</option>
+          <option value="argento">Argenti</option>
+          <option value="bronzo">Bronzi</option>
+        </select>
+      </div>
+      <div class="converter-results">
+        <div class="converter-result">
+          <span id="resOro">1</span>
+          <label>Oro</label>
+        </div>
+        <div class="converter-result">
+          <span id="resArgento">100</span>
+          <label>Argenti</label>
+        </div>
+        <div class="converter-result">
+          <span id="resBronzo">10.000</span>
+          <label>Bronzi</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:2rem">
+      <p class="callout-label">Uso quotidiano</p>
+      <p>I Bronzi circolano per le spese ordinarie e gli scambi al mercato.
+        Gli Argenti per commerci e forniture. L'Oro è la valuta delle grandi
+        transazioni, dei prestiti e degli investimenti bancari.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <nav class="footer-nav" aria-label="Navigazione secondaria">
+      <a href="index.html">La Banca</a>
+      <a href="moneta.html">Moneta</a>
+      <a href="servizi.html">Conti & Investimenti</a>
+      <a href="prestiti.html">Prestiti</a>
+    </nav>
+    <p class="footer-seal">⛨ Grande Credito di Eloria</p>
+    <p class="footer-line">Diretta da Hagen Trollo — Eloria</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
