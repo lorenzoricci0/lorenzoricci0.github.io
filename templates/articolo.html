@@ -1,9 +1,14 @@
+<!--
+  Template per un nuovo articolo.
+  Duplica questo file in posts/nome-file.html, sostituisci
+  titolo, data e testo, poi aggiungi un link in home (index.html).
+-->
 <!doctype html>
 <html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>__TITLE__ — lorenzo ricci</title>
+<title>Titolo dell'articolo — lorenzo ricci</title>
 <link rel="stylesheet" href="../style.css">
 <script>
 window.MathJax = {
@@ -15,10 +20,15 @@ window.MathJax = {
 <body>
 <div class="content">
 <a class="back" href="../index.html">∞</a>
-<h2>__TITLE__</h2>
-<p class="muted post-date">__DATE__</p>
+<h2>Titolo dell'articolo</h2>
+<p class="muted post-date">2026-01-01</p>
 <article>
-__BODY__
+
+<p>Testo dell'articolo qui. Si può scrivere direttamente in HTML: paragrafi,
+<a href="#">link</a>, <code>codice</code>, e formule come $x^2 + y^2 = 1$ oppure:</p>
+
+<p>$$\int_0^\infty e^{-x^2}\,dx = \frac{\sqrt{\pi}}{2}$$</p>
+
 </article>
 </div>
 </body>
