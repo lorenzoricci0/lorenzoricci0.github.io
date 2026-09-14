@@ -1,0 +1,37 @@
+name: build posts
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'content/posts/**.md'
+      - 'scripts/build.py'
+      - 'templates/post.html'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-posts
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - run: pip install markdown
+
+      - run: python scripts/build.py
+
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add posts index.html
+          git diff --cached --quiet || git commit -m "build: genera pagine articoli"
+          git push
