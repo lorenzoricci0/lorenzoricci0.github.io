@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Teorema del resto generalizzato — lorenzo ricci</title>
+<link rel="stylesheet" href="../style.css">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [["$","$"]], displayMath: [["$$","$$"]] }
+};
+</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+</head>
+<body>
+<div class="content">
+<a class="back" href="../index.html">∞</a>
+<h2>Teorema del resto generalizzato</h2>
+<p class="muted post-date">2026-09-15</p>
+<article>
+
+<h3>Teorema (generalizzazione del teorema del resto)</h3>
+
+<p>Siano $P(x)$ e $D(x)$ due polinomi, con $D(x)$ non nullo. Sia $R(x)$ il resto della divisione di
+$P(x)$ per $D(x)$. Allora, per ogni $\lambda$ tale che $D(\lambda) = 0$, si ha</p>
+
+<p>$$R(\lambda) = P(\lambda).$$</p>
+
+<p>Caso particolare (il classico Teorema del Resto): se $D(x) = x - \lambda$, allora $R(x)$ è una
+costante e coincide con $P(\lambda)$.</p>
+
+<h3>Dimostrazione</h3>
+
+<p>Per la divisione euclidea tra polinomi, esistono unici $Q(x)$ e $R(x)$ tali che</p>
+
+<p>$$P(x) = Q(x) \cdot D(x) + R(x), \qquad \text{con } \deg R(x) < \deg D(x).$$</p>
+
+<p>Sia $\lambda$ una radice di $D(x)$, cioè $D(\lambda) = 0$. Valutando in $x = \lambda$:</p>
+
+<p>$$P(\lambda) = Q(\lambda) \cdot D(\lambda) + R(\lambda) = Q(\lambda) \cdot 0 + R(\lambda) = R(\lambda).$$</p>
+
+<p>Quindi $R(\lambda) = P(\lambda)$. &#9633;</p>
+
+<p><em>Osservazione.</em> Se $\deg D(x) = 1$, il resto $R(x)$ è una costante $c$, ed è il teorema del resto.</p>
+
+<h3>Trovare tutto il resto: interpolazione</h3>
+
+<p>Se $D(x)$ ha $n$ radici distinte $\lambda_1, \dots, \lambda_n$, il resto $R(x)$ ha grado minore di $n$, quindi è
+determinato da $n$ coefficienti incogniti. Il teorema dà una condizione per ciascuna radice:</p>
+
+<p>$$R(\lambda_1) = P(\lambda_1), \quad R(\lambda_2) = P(\lambda_2), \quad \dots, \quad R(\lambda_n) = P(\lambda_n).$$</p>
+
+<p>Queste sono esattamente $n$ equazioni per $n$ incognite (i coefficienti di $R$): il sistema ha
+un'unica soluzione, che è proprio il polinomio di interpolazione di grado $< n$ passante per
+i punti $(\lambda_i, P(\lambda_i))$.</p>
+
+<h3>Esempio</h3>
+
+<p>$P(x) = x^{100}$, $D(x) = x^2 - 1$, radici $\lambda = 1, -1$.</p>
+
+<p>Il resto ha forma $R(x) = ax+b$ (2 incognite, perché $\deg D = 2$). Imponiamo $R(\lambda) = P(\lambda)$
+nelle due radici:</p>
+
+<p>$$R(1) = P(1) \Rightarrow a + b = 1^{100} = 1,$$</p>
+
+<p>$$R(-1) = P(-1) \Rightarrow -a + b = (-1)^{100} = 1.$$</p>
+
+<p>Sommando le due equazioni: $2b = 2 \Rightarrow b = 1$. Sottraendo: $2a = 0 \Rightarrow a = 0$.</p>
+
+<p>Quindi $R(x) = 1$: il sistema con le due condizioni ha determinato univocamente entrambi
+i coefficienti, cioè l'intero resto, non solo il suo valore in un punto.</p>
+
+</article>
+</div>
+</body>
+</html>
