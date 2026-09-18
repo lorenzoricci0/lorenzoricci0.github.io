@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Scomposizione di polinomi — lorenzo ricci</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="content">
+<a class="back" href="../index.html">∞</a>
+<h2>Scomposizione di polinomi</h2>
+<p class="muted post-date">Scompone un polinomio in una variabile, anche a coefficienti frazionari. Cerca prima le radici razionali esatte (i coefficienti restano frazioni, non decimali); un eventuale fattore di secondo grado senza radici razionali viene risolto con la formula risolutiva in radicali; per gradi superiori senza radici razionali vengono cercate radici reali numeriche.</p>
+
+<form class="tool-form" id="form">
+<label>
+Coefficienti, dal grado più alto al termine noto (separati da spazio; sono ammesse frazioni tipo 3/4)
+<input type="text" id="coeff" placeholder="es. 1/2 -3/4 1 0 -2" required>
+</label>
+<button type="submit">Scomponi</button>
+</form>
+
+<div class="tool-result" id="risultato"></div>
+
+<script>
+function bgcd(a, b){
+  a = a < 0n ? -a : a;
+  b = b < 0n ? -b : b;
+  while (b){ [a, b] = [b, a % b]; }
+  return a;
+}
+
+function bgcdArr(arr){
+  return arr.reduce((g, n) => bgcd(g, n), 0n);
+}
+
+function bdivisors(n){
+  n = n < 0n ? -n : n;
+  const divs = [];
+  let i = 1n;
+  while (i * i <= n){
+    if (n % i === 0n){
+      divs.push(i);
+      if (i !== n / i) divs.push(n / i);
+    }
+    i += 1n;
+  }
+  return divs;
+}
+
+class Frac {
+  constructor(num, den = 1n){
+    num = BigInt(num);
+    den = BigInt(den);
+    if (den === 0n) throw new Error('denominatore nullo');
+    if (den < 0n){ num = -num; den = -den; }
+    const g = bgcd(num, den) || 1n;
+    this.n = num / g;
+    this.d = den / g;
+  }
+  add(o){ return new Frac(this.n * o.d + o.n * this.d, this.d * o.d); }
+  mul(o){ return new Frac(this.n * o.n, this.d * o.d); }
+  div(o){ return new Frac(this.n * o.d, this.d * o.n); }
+  isZero(){ return this.n === 0n; }
+  toString(){ return this.d === 1n ? this.n.toString() : this.n + '/' + this.d; }
+}
+
+function parseFrac(tok){
+  const m = tok.match(/^(-?\d+)(?:\/(\d+))?$/);
+  if (!m) return null;
+  const num = BigInt(m[1]);
+  const den = m[2] ? BigInt(m[2]) : 1n;
+  if (den === 0n) return null;
+  return new Frac(num, den);
+}
+
+function polyToStringBig(coeffs){
+  const n = coeffs.length - 1;
+  const terms = [];
+  for (let i = 0; i < coeffs.length; i++){
+    const c = coeffs[i];
+    if (c === 0n) continue;
+    const deg = n - i;
+    const abs = c < 0n ? -c : c;
+    let term;
+    if (deg === 0) term = abs.toString();
+    else if (deg === 1) term = (abs === 1n ? '' : abs.toString()) + 'x';
+    else term = (abs === 1n ? '' : abs.toString()) + 'x^' + deg;
+    terms.push({ neg: c < 0n, term });
+  }
+  if (terms.length === 0) return '0';
+  let out = (terms[0].neg ? '-' : '') + terms[0].term;
+  for (let i = 1; i < terms.length; i++) out += ' ' + (terms[i].neg ? '-' : '+') + ' ' + terms[i].term;
+  return out;
+}
+
+function factorLinearString(q, p){
+  const qPart = q === 1n ? 'x' : q + 'x';
+  if (p === 0n) return '(' + qPart + ')';
+  if (p > 0n) return '(' + qPart + ' - ' + p + ')';
+  return '(' + qPart + ' + ' + (-p) + ')';
+}
+
+function simplifySqrt(n){
+  let d = n, k = 1n, p = 2n;
+  while (p * p <= d){
+    while (d % (p * p) === 0n){ d /= (p * p); k *= p; }
+    p += 1n;
+  }
+  return { k, d };
+}
+
+function formatSurd(kAbs, d){
+  if (d === 1n) return kAbs.toString();
+  return (kAbs === 1n ? '' : kAbs.toString()) + '√' + d;
+}
+
+function formatRootFactor(b, k, d, den){
+  const kAbs = k < 0n ? -k : k;
+  const surd = formatSurd(kAbs, d);
+  if (den === 1n){
+    let s = 'x';
+    if (b > 0n) s += ' - ' + b;
+    else if (b < 0n) s += ' + ' + (-b);
+    if (k > 0n) s += ' - ' + surd;
+    else if (k < 0n) s += ' + ' + surd;
+    return '(' + s + ')';
+  }
+  let num;
+  if (b === 0n) num = k < 0n ? '-' + surd : surd;
+  else num = b + (k < 0n ? ' - ' : ' + ') + surd;
+  return '(x - (' + num + ')/' + den + ')';
+}
+
+function formatComplexNote(b, k, d, den){
+  const term = d === 1n
+    ? (k === 1n ? 'i' : k + 'i')
+    : (k === 1n ? 'i√' + d : k + 'i√' + d);
+  const body = b === 0n ? '±' + term : b + ' ± ' + term;
+  if (den === 1n) return b === 0n ? body : '(' + body + ')';
+  return '(' + body + ')/' + den;
+}
+
+function groupFactors(factors){
+  const seen = [];
+  for (const f of factors){
+    const existing = seen.find(s => s.factor === f);
+    if (existing) existing.count++;
+    else seen.push({ factor: f, count: 1 });
+  }
+  return seen.map(s => s.count > 1 ? s.factor + '^' + s.count : s.factor);
+}
+
+function lcmBig(a, b){ return a / bgcd(a, b) * b; }
+
+function roundTrim(x, digits = 6){
+  const r = Number(x.toFixed(digits));
+  return r;
+}
+
+function formatApproxLinear(r){
+  const xr = roundTrim(r);
+  return xr >= 0 ? '(x - ' + xr + ')' : '(x + ' + (-xr) + ')';
+}
+
+function polyEvalFloat(c, x){
+  let r = 0;
+  for (const v of c) r = r * x + v;
+  return r;
+}
+
+function cauchyBound(c){
+  const lead = Math.abs(c[0]);
+  let m = 0;
+  for (let i = 1; i < c.length; i++) m = Math.max(m, Math.abs(c[i]) / lead);
+  return 1 + m;
+}
+
+function findOneRealRoot(c){
+  const n = c.length - 1;
+  if (n < 1) return null;
+  const bound = cauchyBound(c);
+  const N = 4000;
+  let prevX = -bound, prevV = polyEvalFloat(c, prevX);
+  for (let i = 1; i <= N; i++){
+    const x = -bound + (2 * bound * i / N);
+    const v = polyEvalFloat(c, x);
+    if (v === 0) return x;
+    if ((prevV < 0 && v > 0) || (prevV > 0 && v < 0)){
+      let lo = prevX, hi = x, flo = prevV;
+      for (let iter = 0; iter < 80; iter++){
+        const mid = (lo + hi) / 2;
+        const fm = polyEvalFloat(c, mid);
+        if (fm === 0) return mid;
+        if ((flo < 0 && fm > 0) || (flo > 0 && fm < 0)) hi = mid;
+        else { lo = mid; flo = fm; }
+      }
+      return (lo + hi) / 2;
+    }
+    prevX = x; prevV = v;
+  }
+  return null;
+}
+
+function deflateFloat(c, r){
+  const q = [c[0]];
+  for (let i = 1; i < c.length - 1; i++) q.push(c[i] + r * q[i - 1]);
+  return q;
+}
+
+function numericFactor(coeffsFloat){
+  let c = coeffsFloat.slice();
+  const factors = [];
+  while (c.length - 1 >= 3){
+    const r = findOneRealRoot(c);
+    if (r === null) break;
+    factors.push(formatApproxLinear(r));
+    c = deflateFloat(c, r);
+  }
+  let irreducibleQuadratic = null;
+  if (c.length - 1 === 2){
+    const [a2, b2, c2] = c;
+    const delta2 = b2 * b2 - 4 * a2 * c2;
+    if (delta2 >= 0){
+      const sq = Math.sqrt(delta2);
+      factors.push(formatApproxLinear((-b2 + sq) / (2 * a2)));
+      factors.push(formatApproxLinear((-b2 - sq) / (2 * a2)));
+    } else {
+      const bb = roundTrim(b2), cc = roundTrim(c2);
+      irreducibleQuadratic = '(x^2 ' + (bb >= 0 ? '+ ' + bb : '- ' + (-bb)) + 'x ' + (cc >= 0 ? '+ ' + cc : '- ' + (-cc)) + ')';
+    }
+  } else if (c.length - 1 === 1){
+    factors.push(formatApproxLinear(-c[1] / c[0]));
+  }
+  if (irreducibleQuadratic) factors.push(irreducibleQuadratic);
+  return factors;
+}
+
+function factorPolynomial(fracsInput){
+  let fracs = fracsInput.slice();
+  let i = 0;
+  while (i < fracs.length - 1 && fracs[i].isZero()) i++;
+  fracs = fracs.slice(i);
+  if (fracs.every(f => f.isZero())) return { error: 'Il polinomio è identicamente nullo.' };
+
+  let L = 1n;
+  for (const f of fracs) L = lcmBig(L, f.d);
+  let intCoeffs = fracs.map(f => f.mul(new Frac(L)).n);
+
+  const g = bgcdArr(intCoeffs.filter(c => c !== 0n)) || 1n;
+  intCoeffs = intCoeffs.map(c => c / g);
+  let overall = new Frac(g, L);
+
+  if (intCoeffs[0] < 0n){
+    intCoeffs = intCoeffs.map(c => -c);
+    overall = overall.mul(new Frac(-1n));
+  }
+
+  const factors = [];
+  let xPower = 0n;
+  while (intCoeffs.length > 1 && intCoeffs[intCoeffs.length - 1] === 0n){
+    intCoeffs = intCoeffs.slice(0, intCoeffs.length - 1);
+    xPower += 1n;
+  }
+  if (xPower > 0n) factors.push(xPower === 1n ? 'x' : 'x^' + xPower);
+
+  while (intCoeffs.length - 1 >= 2){
+    const n = intCoeffs.length - 1;
+    const a0 = intCoeffs[n];
+    const an = intCoeffs[0];
+    const pDivs = bdivisors(a0);
+    const qDivs = bdivisors(an);
+    let foundRoot = null;
+
+    outer:
+    for (const q of qDivs){
+      for (const pAbs of pDivs){
+        for (const sign of [1n, -1n]){
+          const p = sign * pAbs;
+          if (bgcd(p < 0n ? -p : p, q) !== 1n) continue;
+          let val = 0n;
+          for (let i = 0; i < intCoeffs.length; i++){
+            val += intCoeffs[i] * (p ** BigInt(n - i)) * (q ** BigInt(i));
+          }
+          if (val === 0n){ foundRoot = { p, q }; break outer; }
+        }
+      }
+    }
+
+    if (!foundRoot) break;
+
+    const r = new Frac(foundRoot.p, foundRoot.q);
+    const b = [new Frac(intCoeffs[0])];
+    for (let i = 1; i < intCoeffs.length; i++) b.push(new Frac(intCoeffs[i]).add(r.mul(b[i - 1])));
+    const quotient = b.slice(0, b.length - 1).map(f => f.div(new Frac(foundRoot.q)));
+    intCoeffs = quotient.map(f => f.n);
+    factors.push(factorLinearString(foundRoot.q, foundRoot.p));
+  }
+
+  const deg = intCoeffs.length - 1;
+  let usedNumeric = false;
+  let complexNote = null;
+
+  if (deg === 0){
+    overall = overall.mul(new Frac(intCoeffs[0]));
+  } else if (deg === 1){
+    factors.push('(' + polyToStringBig(intCoeffs) + ')');
+  } else if (deg === 2){
+    const [a, b, c] = intCoeffs;
+    overall = overall.mul(new Frac(a));
+    const delta = b * b - 4n * a * c;
+    const B = -b, D = 2n * a;
+    if (delta > 0n){
+      const { k, d } = simplifySqrt(delta);
+      const h = bgcd(bgcd(B < 0n ? -B : B, k), D) || 1n;
+      const Bh = B / h, Kh = k / h, Dh = D / h;
+      factors.push(formatRootFactor(Bh, Kh, d, Dh));
+      factors.push(formatRootFactor(Bh, -Kh, d, Dh));
+    } else {
+      factors.push('(' + polyToStringBig(intCoeffs) + ')');
+      const { k, d } = simplifySqrt(-delta);
+      const h = bgcd(bgcd(B < 0n ? -B : B, k), D) || 1n;
+      complexNote = formatComplexNote(B / h, k / h, d, D / h);
+    }
+  } else {
+    usedNumeric = true;
+    const lead = intCoeffs[0];
+    overall = overall.mul(new Frac(lead));
+    const monicFloat = intCoeffs.map(c => Number(c) / Number(lead));
+    factors.push(...numericFactor(monicFloat));
+  }
+
+  let parts;
+  if (factors.length === 0) parts = [overall.toString()];
+  else if (overall.n === 1n && overall.d === 1n) parts = groupFactors(factors);
+  else if (overall.n === -1n && overall.d === 1n) parts = ['-', ...groupFactors(factors)];
+  else parts = [overall.toString(), ...groupFactors(factors)];
+
+  return { result: parts.join(''), usedNumeric, complexNote };
+}
+
+document.getElementById('form').addEventListener('submit', function(e){
+  e.preventDefault();
+  const out = document.getElementById('risultato');
+  const raw = document.getElementById('coeff').value;
+  const parti = raw.trim().split(/[\s,]+/).filter(s => s.length);
+
+  if (parti.length < 2){
+    out.innerHTML = '<span class="tool-error">Inserisci almeno due coefficienti (grado ≥ 1).</span>';
+    return;
+  }
+
+  const fracs = [];
+  for (const p of parti){
+    const f = parseFrac(p);
+    if (!f){
+      out.innerHTML = '<span class="tool-error">"' + p + '" non è un coefficiente valido (intero o frazione a/b).</span>';
+      return;
+    }
+    if ((f.n < 0n ? -f.n : f.n) > 1000000n || f.d > 100000n){
+      out.innerHTML = '<span class="tool-error">Coefficiente troppo grande: ' + p + '</span>';
+      return;
+    }
+    fracs.push(f);
+  }
+
+  if (fracs.length > 9){
+    out.innerHTML = '<span class="tool-error">Grado troppo alto (massimo 8).</span>';
+    return;
+  }
+
+  let esito;
+  try {
+    esito = factorPolynomial(fracs);
+  } catch (err){
+    out.innerHTML = '<span class="tool-error">Errore nel calcolo: ' + err.message + '</span>';
+    return;
+  }
+
+  if (esito.error){
+    out.innerHTML = '<span class="tool-error">' + esito.error + '</span>';
+    return;
+  }
+
+  let testo = 'P(x) = ' + esito.result;
+  if (esito.usedNumeric){
+    testo += '\n\n(nessuna radice razionale: le radici reali di grado ≥ 3 sono calcolate numericamente e arrotondate)';
+  }
+  if (esito.complexNote){
+    testo += '\n\nnessuna radice reale nel fattore di secondo grado; radici complesse: ' + esito.complexNote;
+  }
+  out.textContent = testo;
+});
+</script>
+
+</div>
+</body>
+</html>

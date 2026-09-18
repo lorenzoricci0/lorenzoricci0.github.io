@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Scomposizione in fattori primi — lorenzo ricci</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="content">
+<a class="back" href="../index.html">∞</a>
+<h2>Scomposizione in fattori primi</h2>
+<p class="muted post-date">Verifica se un numero è primo e mostra la sua scomposizione in fattori primi.</p>
+
+<form class="tool-form" id="form">
+<label>
+Numero intero (&gt; 1)
+<input type="text" id="numero" placeholder="es. 91" required>
+</label>
+<button type="submit">Calcola</button>
+</form>
+
+<div class="tool-result" id="risultato"></div>
+
+<script>
+function fattorizza(n){
+  const fattori = [];
+  let d = 2;
+  while (d * d <= n){
+    while (n % d === 0){
+      fattori.push(d);
+      n /= d;
+    }
+    d++;
+  }
+  if (n > 1) fattori.push(n);
+  return fattori;
+}
+
+document.getElementById('form').addEventListener('submit', function(e){
+  e.preventDefault();
+  const out = document.getElementById('risultato');
+  const raw = document.getElementById('numero').value.trim();
+
+  if (!/^\d+$/.test(raw)){
+    out.innerHTML = '<span class="tool-error">Inserisci un numero intero positivo.</span>';
+    return;
+  }
+
+  const n = parseInt(raw, 10);
+  if (n < 2){
+    out.innerHTML = '<span class="tool-error">Il numero deve essere maggiore di 1.</span>';
+    return;
+  }
+  if (n > Number.MAX_SAFE_INTEGER){
+    out.innerHTML = '<span class="tool-error">Numero troppo grande.</span>';
+    return;
+  }
+
+  const fattori = fattorizza(n);
+
+  if (fattori.length === 1){
+    out.textContent = n + ' è primo.';
+  } else {
+    out.textContent = n + ' non è primo.\nScomposizione: ' + n + ' = ' + fattori.join(' × ');
+  }
+});
+</script>
+
+</div>
+</body>
+</html>

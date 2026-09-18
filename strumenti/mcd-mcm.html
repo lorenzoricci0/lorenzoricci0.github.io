@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>MCD e mcm — lorenzo ricci</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="content">
+<a class="back" href="../index.html">∞</a>
+<h2>MCD e mcm</h2>
+<p class="muted post-date">Massimo comun divisore e minimo comune multiplo di due o più numeri interi.</p>
+
+<form class="tool-form" id="form">
+<label>
+Numeri (separati da virgola)
+<input type="text" id="numeri" placeholder="es. 12, 18, 30" required>
+</label>
+<button type="submit">Calcola</button>
+</form>
+
+<div class="tool-result" id="risultato"></div>
+
+<script>
+function gcd(a, b){
+  a = Math.abs(a);
+  b = Math.abs(b);
+  while (b){
+    [a, b] = [b, a % b];
+  }
+  return a;
+}
+
+function lcm(a, b){
+  if (a === 0 || b === 0) return 0;
+  return Math.abs(a / gcd(a, b) * b);
+}
+
+document.getElementById('form').addEventListener('submit', function(e){
+  e.preventDefault();
+  const out = document.getElementById('risultato');
+  const raw = document.getElementById('numeri').value;
+  const parti = raw.split(',').map(s => s.trim()).filter(s => s.length);
+
+  if (parti.length < 2){
+    out.innerHTML = '<span class="tool-error">Inserisci almeno due numeri.</span>';
+    return;
+  }
+
+  const numeri = [];
+  for (const p of parti){
+    if (!/^-?\d+$/.test(p)){
+      out.innerHTML = '<span class="tool-error">"' + p + '" non è un numero intero valido.</span>';
+      return;
+    }
+    const n = parseInt(p, 10);
+    if (n === 0){
+      out.innerHTML = '<span class="tool-error">Lo 0 non è ammesso.</span>';
+      return;
+    }
+    numeri.push(n);
+  }
+
+  const g = numeri.reduce((a, b) => gcd(a, b));
+  const m = numeri.reduce((a, b) => lcm(a, b));
+
+  out.textContent = 'MCD(' + numeri.join(', ') + ') = ' + g + '\nmcm(' + numeri.join(', ') + ') = ' + m;
+});
+</script>
+
+</div>
+</body>
+</html>

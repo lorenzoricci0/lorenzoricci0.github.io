@@ -1,0 +1,38 @@
+<!--
+  Template per un nuovo strumento.
+  Duplica questo file in strumenti/nome-file.html, sostituisci
+  titolo e contenuto, poi collega un pulsante in home (index.html)
+  al posto di uno dei "Prossimamente".
+-->
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Titolo dello strumento — lorenzo ricci</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="content">
+<a class="back" href="../index.html">∞</a>
+<h2>Titolo dello strumento</h2>
+<p class="muted post-date">Descrizione breve dello strumento.</p>
+
+<form class="tool-form" id="form">
+<!-- campi di input qui -->
+<button type="submit">Calcola</button>
+</form>
+
+<div class="tool-result" id="risultato"></div>
+
+<script>
+document.getElementById('form').addEventListener('submit', function(e){
+  e.preventDefault();
+  const out = document.getElementById('risultato');
+  out.textContent = '';
+});
+</script>
+
+</div>
+</body>
+</html>
